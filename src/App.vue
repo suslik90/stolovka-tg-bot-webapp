@@ -1,26 +1,13 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <v-container fluid class="pa-0">    
+    <RouterView />
+  </v-container>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+  import { RouterLink, RouterView } from "vue-router";
+  import { useBasketStore } from "./stores/basket";
+  import { useRoute } from "vue-router";
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  const basketStore = useBasketStore();
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

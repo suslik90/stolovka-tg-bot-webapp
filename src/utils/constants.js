@@ -1,0 +1,1 @@
+export const ROUND_AFTER_DOT = 2;
