@@ -13,7 +13,10 @@ const router = createRouter({
       name: 'basket',
       component: () => import('../views/BasketView.vue')
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 }
+  },
 })
 
 export default router

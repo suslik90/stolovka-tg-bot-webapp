@@ -9,7 +9,7 @@
     <v-card-title class="d-flex justify-center"> {{ meal.name }} </v-card-title>
 
     <v-card-subtitle class="d-flex justify-center">
-      {{ meal.cost }}р
+      {{ meal.price }}р
     </v-card-subtitle>
     <v-card-actions class="justify-center">
       <template v-if="countInBasket(meal.name) == 0">
@@ -25,29 +25,29 @@
 </template>
 
 <script>
-  import { useBasketStore } from "../stores/basket";
+  import { useMainStore } from "../stores/main";
   export default {
     props: {
       meal: {
         name: String,
-        cost: Number,
+        price: Number,
       },
     },
     setup(props) {
-      const basketStore = useBasketStore();
+      const mainStore = useMainStore();
 
       function addToBasket() {
-        basketStore.addToBasket(props.meal);
+        mainStore.addToBasket(props.meal);
       }
 
       function removeFromBasket() {
-        basketStore.removeFromBasket(props.meal);
+        mainStore.removeFromBasket(props.meal);
       }
 
       return {
         addToBasket,
         removeFromBasket,
-        countInBasket: basketStore.countInBasket,
+        countInBasket: mainStore.countInBasket,
       };
     },
   };
