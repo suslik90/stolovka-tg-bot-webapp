@@ -30,9 +30,6 @@ export const useMainStore = defineStore('main', {
         setMenu(_menu) {
             this.menu = _menu;
         },
-        getMenu() {
-            console.log(instance);
-        },
         addToBasket(item) {
             let existedIndex = findIndex(this.basket, { name: item.name });
             if (existedIndex > -1) {

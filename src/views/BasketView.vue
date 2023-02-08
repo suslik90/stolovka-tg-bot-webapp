@@ -119,7 +119,9 @@
       <div class="label">Итого:</div>
       <div class="amount">{{ mainStore.totalOrderPrice }}р</div>
     </div>
-    <v-btn @click="send">Заказать</v-btn>
+    <div class="d-flex justify-center mb-10">
+      <v-btn size="large" block @click="send">Заказать</v-btn>
+    </div>
   </v-card>
   <div
     v-else
@@ -133,7 +135,7 @@
 <script setup>
   import { useMainStore } from "../stores/main";
   import CustomToolbar from "../components/CustomToolbar.vue";
-  import {  inject, ref, reactive } from "vue";
+  import { inject, ref, reactive } from "vue";
   import { API_URL } from "../utils/constants";
   import { useVuelidate } from "@vuelidate/core";
   import { helpers, required, email, minLength } from "@vuelidate/validators";
@@ -192,7 +194,7 @@
   }
 
   function send() {
-    v$.value.$touch();    
+    v$.value.$touch();
     if (!v$.value.$invalid) {
       axios
         .post(API_URL + "/order", {
@@ -205,9 +207,7 @@
             mainStore.clearBasket();
             router.back();
           },
-          (error) => {
-
-          }
+          (error) => {}
         );
     }
   }

@@ -14,3 +14,6 @@
 .height-without-toolbar {
   height: 100vh;
 }
+.v-toolbar-title__placeholder {
+  overflow: inherit !important;
+}

@@ -54,6 +54,12 @@
 </script>
 
 <style lang="scss" scoped>
+.v-card-title{
+  line-height: inherit !important;
+  font-size: 0.9rem !important;
+  letter-spacing: inherit !important;
+  white-space: normal !important;
+}
   .v-card-actions {
     .v-btn {
       margin-inline-start: 0 !important;
