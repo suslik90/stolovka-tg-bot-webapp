@@ -6,6 +6,18 @@
     <v-toolbar-title>Оформление заказа</v-toolbar-title>
     <v-spacer></v-spacer>
   </custom-toolbar>
+  <v-dialog v-model="showErrorDialog" max-width="380">
+    <v-card>
+      <v-card-text>
+        К сожалению, мы не смогли принять заказ и уже разбираемся с этой
+        проблемой.<br />
+        Попробуйте оформить заказ позже или оформите заказ по телефону.
+      </v-card-text>
+      <v-card-actions class="justify-center">
+        <v-btn variant="outlined" @click="closeErrorDialog()">Хорошо</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <v-card v-if="mainStore.basket.length > 0" elevation="5" class="px-8 pt-4">
     <div class="order">
       <h2>Заказ:</h2>
@@ -133,13 +145,14 @@
 </template>
 
 <script setup>
-  import { useMainStore } from "../stores/main";
-  import CustomToolbar from "../components/CustomToolbar.vue";
-  import { inject, ref, reactive } from "vue";
-  import { API_URL } from "../utils/constants";
   import { useVuelidate } from "@vuelidate/core";
-  import { helpers, required, email, minLength } from "@vuelidate/validators";
+  import { email, helpers, minLength, required } from "@vuelidate/validators";
+  import { inject, reactive, ref } from "vue";
   import { useRouter } from "vue-router";
+  import CustomToolbar from "../components/CustomToolbar.vue";
+  import { useMainStore } from "../stores/main";
+  import { API_URL } from "../utils/constants";
+  import { tg } from "../utils/telegram-sdk";
 
   const axios = inject("axios");
 
@@ -181,6 +194,13 @@
 
   let v$ = useVuelidate(rules, orderForm);
 
+  let showErrorDialog = ref(false);
+
+  function closeErrorDialog() {
+    showErrorDialog.value = false;
+    tg.close();
+  }
+
   function addToBasket(meal) {
     mainStore.addToBasket(meal);
   }
@@ -201,14 +221,21 @@
           order: mainStore.basket,
           delivery: orderForm,
           orderTotalPrice: mainStore.totalOrderPrice,
+          queryId: tg.initDataUnsafe?.query_id,
         })
         .then(
           (response) => {
             mainStore.clearBasket();
             router.back();
+            tg.close();
           },
-          (error) => {}
-        );
+          (error) => {
+            showErrorDialog.value = true;
+          }
+        )
+        .catch((error) => {
+          showErrorDialog.value = true;
+        });
     }
   }
 </script>
