@@ -40,6 +40,7 @@ export const useMainStore = defineStore('main', {
             } else {
                 item.count = 1;
                 item.totalPrice = round(item.count * item.price, ROUND_AFTER_DOT);
+                delete item.image;
                 this.basket.push(item);
             }
         },
