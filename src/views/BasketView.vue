@@ -1,253 +1,108 @@
 <template>
-  <custom-toolbar>
-    <v-btn icon to="/">
-      <v-icon>mdi-arrow-left</v-icon>
-    </v-btn>
-    <v-toolbar-title>Оформление заказа</v-toolbar-title>
-    <v-spacer></v-spacer>
-  </custom-toolbar>
-  <v-dialog v-model="showErrorDialog" max-width="380">
-    <v-card>
-      <v-card-text>
-        К сожалению, мы не смогли принять заказ и уже разбираемся с этой
-        проблемой.<br />
-        Попробуйте оформить заказ позже или оформите заказ по телефону.
-      </v-card-text>
-      <v-card-actions class="justify-center">
-        <v-btn variant="outlined" @click="closeErrorDialog()">Хорошо</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-  <v-card v-if="mainStore.basket.length > 0" elevation="5" class="px-8 pt-4">
-    <div class="order">
-      <h2>Заказ:</h2>
-      <v-list>
-        <v-list-item v-for="basketItem in mainStore.basket">
-          <v-list-item-title>
-            {{ basketItem.name }}
-          </v-list-item-title>
-          <template v-slot:append>
-            <v-btn variant="plain" icon @click="removeFromBasket(basketItem)"
-              ><v-icon>mdi-minus</v-icon></v-btn
-            >
-            <div class="meal-count">
-              {{ mainStore.countInBasket(basketItem.name) }}
-            </div>
-            <v-btn variant="plain" icon @click="addToBasket(basketItem)"
-              ><v-icon>mdi-plus</v-icon></v-btn
-            >
-            <div class="meal-total-price d-flex justify-end ml-4">
-              {{ basketItem.totalPrice }}р
-            </div>
-            <v-btn
-              variant="plain"
-              icon
-              @click="removeForceFromBasket(basketItem)"
-              ><v-icon color="error">mdi-close</v-icon></v-btn
-            >
-          </template>
-        </v-list-item>
-        <v-divider class="mb-2"></v-divider>
-      </v-list>
-    </div>
-    <div class="delivery">
-      <h2>Доставка:</h2>
-      <v-row>
-        <v-col>
-          <v-form>
-            <v-text-field
-              v-model="orderForm.street"
-              placeholder="Улица и дом"
-              bg-color="white"
-              :error-messages="v$.street.$errors.map((e) => e.$message)"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="orderForm.apartment"
-              placeholder="№ квартиры/офиса"
-              bg-color="white"
-              :error-messages="v$.apartment.$errors.map((e) => e.$message)"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="orderForm.entrance"
-              placeholder="Подъезд"
-              bg-color="white"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="orderForm.level"
-              placeholder="Этаж"
-              bg-color="white"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="orderForm.name"
-              placeholder="Имя"
-              bg-color="white"
-              :error-messages="v$.name.$errors.map((e) => e.$message)"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="orderForm.phone"
-              placeholder="Телефон"
-              bg-color="white"
-              :error-messages="v$.phone.$errors.map((e) => e.$message)"
-              required
-            ></v-text-field>
-            <input
-              class="d-none"
-              v-maska
-              data-maska="+7(###)-###-##-##"
-              type="text"
-              v-model="orderForm.phone"
-            />
-            <v-text-field
-              v-model="orderForm.email"
-              placeholder="Email"
-              bg-color="white"
-              :error-messages="v$.email.$errors.map((e) => e.$message)"
-              required
-            ></v-text-field>
-            <v-textarea
-              v-model="orderForm.comment"
-              placeholder="Комментарий курьеру"
-              bg-color="white"
-            ></v-textarea>
-          </v-form>
-        </v-col>
-      </v-row>
-    </div>
-    <v-divider class="mb-2"></v-divider>
-    <div class="payment">
-      <h2>Оплата:</h2>
-      <v-radio-group inline :model-value="orderForm.payment">
-        <v-radio label="Наличные" value="cash"></v-radio>
-        <v-radio label="Онлайн" value="online"></v-radio>
-      </v-radio-group>
-    </div>
-    <v-divider class="mb-2"></v-divider>
-    <div class="order-total d-flex justify-space-between mb-8">
-      <div class="label">Итого:</div>
-      <div class="amount">{{ mainStore.totalOrderPrice }}р</div>
-    </div>
-    <div class="d-flex justify-center mb-10">
-      <v-btn size="large" block @click="send">Заказать</v-btn>
-    </div>
-  </v-card>
+  <CustomToolbarNew class="px-5">
+    <template v-slot:title>Корзина</template>
+    <template v-slot:actions>
+      <v-btn
+        icon="mdi-close"
+        class="toolbar-btn-icon-size primary-btn toolbar-btn"
+        @click="goBack"
+      ></v-btn>
+    </template>
+  </CustomToolbarNew>
   <div
-    v-else
-    class="d-flex align-center justify-center height-with-toolbar text-center"
+    class="order-title d-flex justify-space-between px-5 mt-5"
+    v-if="mainStore.basket.length > 0"
   >
+    <div
+      class="d-flex align-center jystify-center title primary-btn rounded-btn"
+    >
+      Заказ:
+    </div>
+    <v-btn
+      class="d-flex align-center jystify-center clear-basket secondary-btn rounded-btn text-none"
+      @click="clearBasket"
+    >
+      Очистить корзину
+    </v-btn>
+  </div>
+  <div v-if="mainStore.basket.length > 0">
+    <div class="cart-list d-flex flex-column align-center pt-5">
+      <CartItem
+        v-for="basketItem in mainStore.basket"
+        :menuItem="basketItem"
+        class="mb-5"
+      />
+    </div>
+    <div class="next-section d-flex justify-center">
+      <BigButton class="cart-list-item" @click="toDelivery"
+        >Далее ({{
+          $filters.numberFormat(mainStore.totalOrderPrice, [2, " "])
+        }}
+        ₽)</BigButton
+      >
+    </div>
+  </div>
+  <div v-else class="d-flex align-center justify-center basket-empty">
     Вы ничего не положили в корзину...<br />
     Не голодны?
   </div>
 </template>
 
 <script setup>
-  import { useVuelidate } from "@vuelidate/core";
-  import { email, helpers, minLength, required } from "@vuelidate/validators";
-  import { inject, reactive, ref } from "vue";
-  import { useRouter } from "vue-router";
-  import CustomToolbar from "../components/CustomToolbar.vue";
+  import CustomToolbarNew from "../components/CustomToolbar.vue";
+  import CartItem from "../components/CartItem.vue";
+  import BigButton from "../components/BigButton.vue";
+  import router from "../router";
   import { useMainStore } from "../stores/main";
-  import { API_URL } from "../utils/constants";
+  import { SwipeList, SwipeOut } from "vue-swipe-actions";
   import { tg } from "../utils/telegram-sdk";
 
-  const axios = inject("axios");
+  tg.BackButton.show();
+  tg.BackButton.onClick(() => {
+    goBack();
+  });
 
   const mainStore = useMainStore();
-  const router = useRouter();
 
-  const errorMessages = {
-    required: "Поле должно быть заполнено",
-    noValidEmail: "Некорректно указан email",
-    badPhone: "Некорректно указан контактный телефон",
-  };
-
-  let orderForm = reactive({
-    street: "",
-    apartment: "",
-    entrance: "",
-    level: "",
-    name: "",
-    phone: "",
-    email: "",
-    comment: "",
-    payment: "cash",
-  });
-  const rules = {
-    street: { required: helpers.withMessage(errorMessages.required, required) },
-    apartment: {
-      required: helpers.withMessage(errorMessages.required, required),
-    },
-    name: { required: helpers.withMessage(errorMessages.required, required) },
-    phone: {
-      required: helpers.withMessage(errorMessages.required, required),
-      minLength: helpers.withMessage(errorMessages.badPhone, minLength(17)),
-    },
-    email: {
-      required: helpers.withMessage(errorMessages.required, required),
-      email: helpers.withMessage(errorMessages.noValidEmail, email),
-    },
-  };
-
-  let v$ = useVuelidate(rules, orderForm);
-
-  let showErrorDialog = ref(false);
-
-  function closeErrorDialog() {
-    showErrorDialog.value = false;
-    tg.close();
+  function goBack() {
+    router.back();
   }
 
-  function addToBasket(meal) {
-    mainStore.addToBasket(meal);
+  function toDelivery() {
+    router.push({ path: "/delivery" });
   }
 
-  function removeFromBasket(meal) {
-    mainStore.removeFromBasket(meal);
-  }
-
-  function removeForceFromBasket(meal) {
-    mainStore.removeForceFromBasket(meal);
-  }
-
-  function send() {
-    v$.value.$touch();
-    if (!v$.value.$invalid) {
-      axios
-        .post(API_URL + "/order", {
-          order: mainStore.basket,
-          delivery: orderForm,
-          orderTotalPrice: mainStore.totalOrderPrice,
-          queryId: tg.initDataUnsafe?.query_id,
-        })
-        .then(
-          (response) => {
-            mainStore.clearBasket();
-            router.back();
-            tg.close();
-          },
-          (error) => {
-            showErrorDialog.value = true;
-          }
-        )
-        .catch((error) => {
-          showErrorDialog.value = true;
-        });
-    }
+  function clearBasket() {
+    mainStore.clearBasket();
   }
 </script>
 
-<style lang="scss" scoped>
-  .order-total {
-    font-size: 26px;
+<style lang="scss">
+  .order-title {
+    height: 36px;
+    width: 100%;
+
+    .title,
+    .clear-basket {
+      font-size: 20px;
+      font-weight: 700;
+      padding: 0 10px;
+    }
   }
-  .v-list-item-title {
-    white-space: unset !important;
+  .next-section {
+    width: 100%;
+    position: sticky;
+    bottom: -40px;
+
+    .cart-list-item:last-child {
+      margin-bottom: 110px;
+    }
   }
-  .meal-total-price {
-    width: 70px;
+  .basket-empty {
+    color: var(--font-color-over-primary);
+    height: 55vh;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
   }
 </style>

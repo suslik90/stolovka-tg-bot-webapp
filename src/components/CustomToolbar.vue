@@ -1,18 +1,26 @@
 <template>
-  <v-toolbar class="pt-3 px-2 toolbar__fixed">
-    <slot></slot>
-  </v-toolbar>
+  <div class="d-flex custom-toolbar justify-space-between">
+    <div class="custom-toolbar__title">
+      <slot name="title"></slot>
+    </div>
+    <div class="d-inline-flex custom-toolbar__actions  justify-end">
+      <slot name="actions"></slot>
+    </div>
+  </div>
 </template>
 
 <script setup>
 </script>
 
 <style lang="scss" scoped>
-  .toolbar__fixed {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: transparent;
-    backdrop-filter: blur(5px) drop-shadow(4px 0 10px blue);
+  .custom-toolbar {
+    &__title {
+      color: var(--font-color-over-primary);
+      font-size: 32px;
+      font-weight: 700;
+    } 
+    &__actions {
+      width: 100%;
+    }
   }
 </style>

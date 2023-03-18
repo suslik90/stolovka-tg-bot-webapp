@@ -12,6 +12,11 @@ const router = createRouter({
       path: '/basket',
       name: 'basket',
       component: () => import('../views/BasketView.vue')
+    },
+    {
+      path: '/delivery',
+      name: 'delivery',
+      component: () => import('../views/DeliveryView.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {
