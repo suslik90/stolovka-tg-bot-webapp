@@ -1,61 +1,224 @@
 <template>
-  <div class="mx-3">
-    <div v-if="menuKeys > 0">
-      <custom-toolbar>
-        <v-spacer></v-spacer>
-        <div class="mr-3">
-          <v-btn icon to="/basket">
-            <v-badge
-              v-if="mainStore.countAllInBasket > 0"
-              :content="mainStore.countAllInBasket"
-              color="error"
-            >
-              <v-icon large>mdi-cart-variant</v-icon>
-            </v-badge>
-            <v-icon large v-else>mdi-cart-variant</v-icon>
-          </v-btn>
+  <div
+    class="d-flex align-center progress-wrapper justify-center text-center"
+    v-if="isLoading"
+  >
+    <v-progress-circular indeterminate :size="125"></v-progress-circular>
+  </div>
+  <div v-else>
+    <CustomToolbar class="pl-5">
+      <template v-slot:actions>
+        <v-text-field
+          class="search-field primary-btn px-3 align-center"
+          v-model="searchString"
+          clearable
+          clear-icon="mdi-close"
+          density="compact"
+          hide-details="auto"
+          variant="plain"
+          placeholder="Введите название блюда"
+          @input="search"
+          @click:clear="clearSearch"
+        >
+          <template v-slot:prepend-inner>
+            <v-icon icon="mdi-magnify" color="font-color-over-primary" />
+          </template>
+        </v-text-field>
+        <div class="d-flex" style="position: relative">
+          <v-btn
+            to="/basket"
+            icon="mdi-cart-outline"
+            class="ml-3 toolbar-btn-icon-size primary-btn toolbar-btn"
+            :class="{ 'mr-4': mainStore.countAllInBasket == 0 }"
+          ></v-btn>
+          <div
+            class="count-in-cart primary-btn"
+            v-show="mainStore.countAllInBasket > 0"
+          >
+            {{ mainStore.countAllInBasket }}
+          </div>
         </div>
-      </custom-toolbar>
-      <v-row>
-        <v-col cols="6" v-for="(item, index) in mainStore.menu.meals">
-          <menu-item-card :meal="item" :key="index" />
-        </v-col>
-      </v-row>
+      </template>
+    </CustomToolbar>
+    <div class="menu-groups mt-6 pl-4">
+      <v-slide-group>
+        <v-slide-group-item
+          v-for="(name, index) in mainStore.menuGroups"
+          :key="'sg_' + index"
+        >
+          <v-btn
+            class="menu-groups__btn ma-2"
+            rounded
+            :class="{
+              'secondary-btn': name != isSelected,
+              'primary-btn': name == isSelected,
+            }"
+            @click="selectGroup(name)"
+          >
+            {{ name }}
+          </v-btn>
+        </v-slide-group-item>
+      </v-slide-group>
     </div>
-    <div
-      class="d-flex align-center height-with-toolbar justify-center text-center"
-      v-else
-    >
-      <v-progress-circular
-        indeterminate
-        :size="125"
-        v-if="menuKeys == 0 && isLoading"
-      ></v-progress-circular>
-      <p v-else>На сегодня мы не смогли разместить меню :(</p>
+    <div class="d-flex flex-column justify-center mb-6 mx-5">
+      <MenuItem
+        v-for="(menuItem, index) in activeMeals"
+        :menuItem="menuItem"
+        :key="isSelected + '_' + index"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref, inject, computed } from "vue";
+  import { ref, inject, computed, getCurrentInstance, onMounted } from "vue";
   import { useMainStore } from "../stores/main";
-  import MenuItemCard from "../components/MenuItemCard.vue";
+  import MenuItem from "../components/MenuItem.vue";
   import CustomToolbar from "../components/CustomToolbar.vue";
-  import { API_URL } from "../utils/constants";
+  import { API_URL, ALL_MENU_ITEMS_GROUP_NAME } from "../utils/constants";
+  import { tg } from "../utils/telegram-sdk";
+
+  if (tg.BackButton.isVisible) tg.BackButton.hide();
+  tg.enableClosingConfirmation();
 
   const axios = inject("axios");
 
   let mainStore = useMainStore();
-  let isLoading = ref(true);
-  const menuKeys = computed(() => Object.keys(mainStore.menu).length);
+  let isLoading = ref(false);
+  let searchIsActive = ref(false);
+  let searchString = ref("");
+  let activeMeals = ref([]);
 
-  if (menuKeys.value == 0) {
+  let menuGroupsNames = [];
+  let isSelected = ref("");
+
+  function setActiveMeals(_groupName) {
+    let groupMeals = [];
+    let menuGroups = mainStore.actualityMenu;
+    if (_groupName == ALL_MENU_ITEMS_GROUP_NAME) {
+      menuGroups
+        .filter(
+          (menuGroupItem) => menuGroupItem.category != ALL_MENU_ITEMS_GROUP_NAME
+        )
+        .map((groupItem) => {
+          groupMeals = groupMeals.concat(groupItem.meals);
+        });
+    } else {
+      let groupItem = menuGroups.find(
+        (groupItem) => groupItem.category == _groupName
+      );
+      groupMeals = groupItem.meals;
+    }
+    activeMeals.value = groupMeals;
+    searchString.value = "";
+  }
+
+  function selectGroup(selectedName) {
+    isSelected.value = selectedName;
+    setActiveMeals(selectedName);
+  }
+  function clearSearch() {
+    setActiveMeals(isSelected.value);
+  }
+  function search() {
+    const searchValue = searchString.value.toLowerCase();
+    let menuGroups = mainStore.actualityMenu;
+    if (searchValue == "") {
+      clearSearch();
+    } else {
+      let arrayMealsForSearch = [];
+      let groupMeals = [];
+
+      if (isSelected.value == ALL_MENU_ITEMS_GROUP_NAME) {
+        menuGroups
+          .filter(
+            (menuGroupItem) => menuGroupItem.category != ALL_MENU_ITEMS_GROUP_NAME
+          )
+          .map((groupItem) => {
+            groupMeals = groupMeals.concat(groupItem.meals);
+          });
+        arrayMealsForSearch = groupMeals;
+      } else {
+        const groupItem = menuGroups.find(
+          (groupItem) => groupItem.category == isSelected.value
+        );
+        arrayMealsForSearch = groupItem.meals;
+      }
+
+      let filteredActiveMeals = arrayMealsForSearch.filter((meal) => {
+        return (
+          meal.name.toLowerCase().includes(searchValue) ||
+          meal.description.toLowerCase().includes(searchValue)
+        );
+      });
+      activeMeals.value = filteredActiveMeals;
+    }
+  }
+
+  onMounted(() => {
+    isLoading.value = true;
     axios.get(API_URL + "/menu").then(
       (response) => {
-        mainStore.setMenu(response.data);
+        mainStore.setMenu(response.data.menu);
         isLoading.value = false;
+        menuGroupsNames = mainStore.actualityMenu.map(
+          (menuGroupItem) => menuGroupItem.category
+        );
+        menuGroupsNames.unshift(ALL_MENU_ITEMS_GROUP_NAME);
+        mainStore.setMenuGroups(menuGroupsNames);
+
+        isSelected.value = menuGroupsNames[0];
+        setActiveMeals(isSelected.value);
       },
       (error) => {}
     );
-  }
+  });
 </script>
+<style lang="scss">
+  .progress-wrapper {
+    color: var(--primary-color);
+    height: 99vh;
+  }
+  .search-field {
+    width: 100%;
+    border-radius: var(--border-radius-header-btn) !important;
+    color: var(--font-color-over-primary);
+    .v-field {
+      .v-icon {
+        opacity: 1 !important;
+        font-size: 28px;
+      }
+      &__input {
+        padding-top: 8px !important;
+      }
+      .v-field__input::-webkit-input-placeholder,
+      .v-field__input::placeholder {
+        font-style: italic;
+        color: var(--font-color-over-primary);
+        opacity: 1 !important;
+      }
+    }
+  }
+
+  .count-in-cart {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    position: relative;
+    top: 25px;
+    right: 25px;
+    height: 15px;
+    background-color: var(--background-color-white) !important;
+    color: var(--primary-color) !important;
+    border-radius: 16px;
+    font-size: 10px;
+    padding: 0 5px;
+  }
+  .menu-groups {
+    &__btn {
+      text-transform: initial !important;
+      font-size: 20px;
+      font-weight: 700;
+    }
+  }
+</style>

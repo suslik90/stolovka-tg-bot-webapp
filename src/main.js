@@ -9,7 +9,8 @@ import VueAxios from 'vue-axios'
 
 import { vMaska } from "maska"
 
-import './assets/main.css'
+// import './assets/main.css'
+import './assets/main.scss'
 
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
@@ -17,7 +18,44 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
+
+const customLightTheme = {
+  dark: false,
+  colors: {
+    background: '#f1f1ff',
+    primary: '#f15a5a',
+    secondary: '#f15a5a40',
+    error: '#B00020',
+    'menu-item-color': '#252c39',
+    'placeholder-color': '#252c3980',
+    'font-color-over-primary': '#f1f1ff',
+    white: '#ffffff'
+  }
+};
+
+const customDarkTheme = {
+  dark: true,
+  colors: {
+    background: '#1e1e1e',
+    primary: '#f1da5a',
+    secondary: '#f15a5a40',
+    error: '#B00020',
+    'menu-item-color': '#252c39',
+    'placeholder-color': '#252c3980',
+    'font-color-over-primary': '#f1f1ff',
+    white: '#ffffff'
+  }
+};
+
 const vuetify = createVuetify({
+  // theme: {
+  //   options: { customProperties: true },
+  //   defaultTheme: 'customLightTheme',
+  //   themes: {
+  //     'customLightTheme': customLightTheme,
+  //     'customDarkTheme': customDarkTheme
+  //   }
+  // },
   components,
   directives,
   icons: {
@@ -26,6 +64,35 @@ const vuetify = createVuetify({
 })
 
 const app = createApp(App)
+
+app.config.globalProperties.$filters = {
+  numberFormat(_number, args) {
+    const toFixedFix = function (n, prec) {
+      const k = Math.pow(10, prec);
+      return '' + (Math.round(n * k) / k).toFixed(prec);
+    }
+
+    let number = _number.toString();
+    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+    const n = !isFinite(+number) ? 0 : +number;
+    const prec = !isFinite(+Number(args[0])) ? 0 : Math.abs(Number(args[0]));
+    const sep = (typeof args[1] === 'undefined') ? ',' : args[1];
+    const dec = (typeof args[2] === 'undefined') ? '.' : args[2];
+    let s = [];
+
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+      s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep)
+    }
+    if ((s[1] || '').length < prec) {
+      s[1] = s[1] || '';
+      s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec)
+  }
+}
+
+
 
 app.use(createPinia())
 app.use(router)

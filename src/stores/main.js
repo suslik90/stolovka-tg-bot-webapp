@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { findIndex, sumBy, round } from 'lodash'
-import { ROUND_AFTER_DOT } from '../utils/constants'
+import { ROUND_AFTER_DOT, ALL_MENU_ITEMS_GROUP_NAME } from '../utils/constants'
 
 export const useMainStore = defineStore('main', {
     state: () => {
         return {
             basket: [],
-            menu: {}
+            menu: [],
+            groups: []
         }
     },
     getters: {
@@ -24,11 +25,17 @@ export const useMainStore = defineStore('main', {
         },
         actualityMenu(state) {
             return state.menu;
+        },
+        menuGroups(state) {
+            return state.groups
         }
     },
     actions: {
         setMenu(_menu) {
             this.menu = _menu;
+        },
+        setMenuGroups(_groups) {
+            this.groups = _groups;
         },
         addToBasket(item) {
             let existedIndex = findIndex(this.basket, { name: item.name });
@@ -60,7 +67,7 @@ export const useMainStore = defineStore('main', {
         removeForceFromBasket(item) {
             this.basket = [...this.basket.filter(basketItem => item.name !== basketItem.name)];
         },
-        clearBasket(){
+        clearBasket() {
             this.basket = [];
         }
     }
