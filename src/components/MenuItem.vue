@@ -1,5 +1,5 @@
 <template>
-  <v-card width="360px" class="menu-item-card pa-3 pb-0 mt-5">
+  <v-card class="menu-item-card pa-3 pb-0 mt-5">
     <v-img
       :src="imageString"
       height="142px"
@@ -76,6 +76,10 @@
     border-radius: var(--border-radius-btn);
     margin: 0 auto;
     background-color: var(--background-color-white);
+    min-width: 295px;
+    width: 95%;
+    max-width: 554px;
+    align-self: center;
 
     &__image {
       border-radius: 15px;

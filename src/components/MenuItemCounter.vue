@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex">
     <v-btn
+      variant="flat"
       icon="mdi-minus"
       class="menu-item__actions__buttons__minus secondary-btn rounded-btn"
       @click="removeFromBasket"
@@ -9,6 +10,7 @@
       {{ countInBasket(menuItem.name) }}
     </div>
     <v-btn
+      variant="flat"
       icon="mdi-plus"
       class="menu-item__actions__buttons__plus primary-btn rounded-btn ml-0"
       @click="addToBasket"
