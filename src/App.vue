@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0 pt-2">
+  <v-container fluid class="pa-0">
     <RouterView />
   </v-container>
 </template>

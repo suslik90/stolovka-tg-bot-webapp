@@ -1,5 +1,5 @@
 <template>
-  <CustomToolbarNew class="px-5">
+  <CustomToolbarNew class="px-5 pt-4">
     <template v-slot:title>Корзина</template>
     <template v-slot:actions>
       <v-btn
@@ -26,7 +26,7 @@
     </v-btn>
   </div>
   <div v-if="mainStore.basket.length > 0">
-    <div class="cart-list d-flex flex-column align-center pt-5">
+    <div class="cart-list d-flex flex-column align-center pt-5 px-5">
       <CartItem
         v-for="basketItem in mainStore.basket"
         :menuItem="basketItem"
@@ -34,7 +34,7 @@
       />
     </div>
     <div class="next-section d-flex justify-center">
-      <BigButton class="cart-list-item" @click="toDelivery"
+      <BigButton @click="toDelivery"
         >Далее ({{
           $filters.numberFormat(mainStore.totalOrderPrice, [2, " "])
         }}
@@ -69,7 +69,7 @@
   }
 
   function toDelivery() {
-    router.push({ path: "/delivery" });
+    router.push({ name: 'delivery' });
   }
 
   function clearBasket() {
@@ -89,14 +89,13 @@
       padding: 0 10px;
     }
   }
+  .slide-btn:last-child, .desktop-item:last-child {
+      margin-bottom: 110px !important;
+    }
   .next-section {
     width: 100%;
-    position: sticky;
-    bottom: -40px;
-
-    .cart-list-item:last-child {
-      margin-bottom: 110px;
-    }
+    position: fixed;
+    bottom: 20px;
   }
   .basket-empty {
     color: var(--font-color-over-primary);

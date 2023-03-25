@@ -1,5 +1,5 @@
 <template>
-  <div class="slide-btn" v-if="isMobile">
+  <div class="slide-btn w-100" v-if="isMobile">
     <swipe-list ref="list" class="card" :items="[[menuItem]]" item-key="id">
       <template
         v-slot="{
@@ -14,11 +14,11 @@
       >
         <div ref="content" class="card-content">
           <div
-            class="d-flex justify-space-between justify-center align-center px-3 cart-item"
+            class="d-flex justify-space-between justify-center align-center px-3 cart-item w-100"
           >
             <div class="cart-item__left pl-3">
               <div class="name">
-                {{ menuItem.name }}
+                {{ menuItem.name.substring(0, 42) }}
               </div>
               <div class="price">{{ menuItem.price }} ₽</div>
             </div>
@@ -38,9 +38,9 @@
       </template>
     </swipe-list>
   </div>
-  <div class="desktop-item d-flex align-center px-5  w-100" v-else>
+  <div class="desktop-item d-flex align-center justify-center px-5" v-else>
     <div
-      class="d-flex justify-space-between justify-center align-center px-3 cart-item w-100"
+      class="d-flex justify-space-between justify-center align-center px-3 cart-item"
     >
       <div class="cart-item__left pl-3">
         <div class="name">
@@ -80,7 +80,7 @@
   const mainStore = useMainStore();
   const mobilePlatforms = ['android','ios'];
 
-  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase()) ? true : false;
+  const isMobile = true;//mobilePlatforms.includes(tg.platform.toLowerCase()) ? true : false;
 
   function removeForceFromBasket(_item) {
     mainStore.removeForceFromBasket(props.menuItem);
@@ -101,16 +101,16 @@
   .slide-btn {
     background-color: var(--primary-color);
     height: var(--input-height);
-    border-radius: 30px var(--border-radius-card-item)
-      var(--border-radius-card-item) 30px;
+    border-radius: 32px;
     border-style: none;
-    width: 373px;
+    // width: 373px;
   }
   .cart-item {
     height: var(--input-height);
     border-radius: var(--border-radius-card-item);
     background-color: var(--background-color-white);
-    width: 373px;
+    width: calc(100% - 70px);
+    min-width: 300px;
 
     &__left {
       width: 66%;
@@ -131,6 +131,11 @@
     }
     &__right {
     }
+  }
+  .desktop-item{
+    min-width: 360px;
+    width: 80%;
+    max-width: 554px;
   }
   .w-100{
     width:100% !important;

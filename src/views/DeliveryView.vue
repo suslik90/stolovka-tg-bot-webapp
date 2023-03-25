@@ -11,7 +11,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <CustomToolbarNew class="px-5">
+  <CustomToolbarNew class="px-5 pt-4">
     <template v-slot:title>Доставка</template>
     <template v-slot:actions>
       <v-btn
@@ -356,6 +356,7 @@
     }
   }
   .delivery-total {
+    margin-bottom: 150px;
     .title {
       font-size: 20px;
       font-weight: 700;
@@ -368,13 +369,14 @@
       color: var(--font-color-over-primary);
     }
   }
-  .next-section {
+  .delivery-action{
     width: 100%;
-    position: sticky;
-    bottom: -40px;
-
-    .cart-list-item:last-child {
-      margin-bottom: 110px;
-    }
+    position: fixed;
+    bottom: 20px;
   }
+  // .next-section {
+  //   width: 100%;
+  //   position: sticky;
+  //   bottom: -40px;
+  // }
 </style>

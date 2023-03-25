@@ -6,65 +6,86 @@
     <v-progress-circular indeterminate :size="125"></v-progress-circular>
   </div>
   <div v-else>
-    <CustomToolbar class="pl-5">
-      <template v-slot:actions>
-        <v-text-field
-          class="search-field primary-btn px-3 align-center"
-          v-model="searchString"
-          clearable
-          clear-icon="mdi-close"
-          density="compact"
-          hide-details="auto"
-          variant="plain"
-          placeholder="Введите название блюда"
-          @input="search"
-          @click:clear="clearSearch"
-        >
-          <template v-slot:prepend-inner>
-            <v-icon icon="mdi-magnify" color="font-color-over-primary" />
-          </template>
-        </v-text-field>
-        <div class="d-flex" style="position: relative">
-          <v-btn
-            to="/basket"
-            icon="mdi-cart-outline"
-            class="ml-3 toolbar-btn-icon-size primary-btn toolbar-btn"
-            :class="{ 'mr-4': mainStore.countAllInBasket == 0 }"
-          ></v-btn>
-          <div
-            class="count-in-cart primary-btn"
-            v-show="mainStore.countAllInBasket > 0"
+    <div class="stiky-header pt-4">
+      <CustomToolbar class="px-5">
+        <template v-slot:actions>
+          <v-text-field
+            class="search-field primary-btn px-3 align-center"
+            v-model="searchString"
+            clearable
+            clear-icon="mdi-close"
+            density="compact"
+            hide-details="auto"
+            variant="plain"
+            placeholder="Введите название блюда"
+            @input="search"
+            @click:clear="clearSearch"
           >
-            {{ mainStore.countAllInBasket }}
+            <template v-slot:prepend-inner>
+              <v-icon icon="mdi-magnify" color="font-color-over-primary" />
+            </template>
+          </v-text-field>
+          <div class="d-flex" style="position: relative">
+            <v-btn
+              to="/basket"
+              icon="mdi-cart-outline"
+              class="ml-3 toolbar-btn-icon-size primary-btn toolbar-btn"
+            ></v-btn>
+            <div
+              class="count-in-cart primary-btn"
+              v-show="mainStore.countAllInBasket > 0"
+              @click="goBasket"
+            >
+              {{ mainStore.countAllInBasket }}
+            </div>
+          </div>
+        </template>
+      </CustomToolbar>
+      <div class="menu-groups mt-6 pl-4">
+        <div class="wrap-slider d-flex">
+          <div
+            class="slider-item"
+            v-for="(name, index) in mainStore.menuGroups"
+            :key="'sg_' + index"
+          >
+            <v-btn
+              class="menu-groups__btn ma-2"
+              rounded
+              :class="{
+                'secondary-btn': name != isSelected,
+                'primary-btn': name == isSelected,
+              }"
+              @click="selectGroup(name)"
+            >
+              {{ name }}
+            </v-btn>
           </div>
         </div>
-      </template>
-    </CustomToolbar>
-    <div class="menu-groups mt-6 pl-4">
-      <v-slide-group>
-        <v-slide-group-item
-          v-for="(name, index) in mainStore.menuGroups"
-          :key="'sg_' + index"
-        >
-          <v-btn
-            class="menu-groups__btn ma-2"
-            rounded
-            :class="{
-              'secondary-btn': name != isSelected,
-              'primary-btn': name == isSelected,
-            }"
-            @click="selectGroup(name)"
+        <!-- <v-slide-group>
+          <v-slide-group-item
+            v-for="(name, index) in mainStore.menuGroups"
+            :key="'sg_' + index"
           >
-            {{ name }}
-          </v-btn>
-        </v-slide-group-item>
-      </v-slide-group>
+            <v-btn
+              class="menu-groups__btn ma-2"
+              rounded
+              :class="{
+                'secondary-btn': name != isSelected,
+                'primary-btn': name == isSelected,
+              }"
+              @click="selectGroup(name)"
+            >
+              {{ name }}
+            </v-btn>
+          </v-slide-group-item>
+        </v-slide-group> -->
+      </div>
     </div>
-    <div class="d-flex flex-column justify-center mb-6 mx-5">
+    <div class="d-flex flex-column justify-center mb-6 mx-2">
       <MenuItem
-        v-for="(menuItem, index) in activeMeals"
+        v-for="menuItem in activeMeals"
         :menuItem="menuItem"
-        :key="isSelected + '_' + index"
+        :key="menuItem.key"
       />
     </div>
   </div>
@@ -77,6 +98,7 @@
   import CustomToolbar from "../components/CustomToolbar.vue";
   import { API_URL, ALL_MENU_ITEMS_GROUP_NAME } from "../utils/constants";
   import { tg } from "../utils/telegram-sdk";
+  import router from "../router";
 
   if (tg.BackButton.isVisible) tg.BackButton.hide();
   tg.enableClosingConfirmation();
@@ -155,11 +177,32 @@
     }
   }
 
+  function goBasket() {
+    router.push({ path: "/basket" });
+  }
+
+  function genRandonString(length) {
+    var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var charLength = chars.length;
+    var result = "";
+    for (var i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * charLength));
+    }
+    return result;
+  }
+
   onMounted(() => {
     isLoading.value = true;
     axios.get(API_URL + "/menu").then(
       (response) => {
-        mainStore.setMenu(response.data.menu);
+        const menuWithKeys = response.data.menu.map((category) => {
+          category.meals.map((mealItem) => {
+            mealItem.key = genRandonString(10);
+            return mealItem;
+          });
+          return category;
+        });
+        mainStore.setMenu(menuWithKeys);
         isLoading.value = false;
         menuGroupsNames = mainStore.actualityMenu.map(
           (menuGroupItem) => menuGroupItem.category
@@ -175,6 +218,20 @@
   });
 </script>
 <style lang="scss">
+  .wrap-slider {
+    width: 99%;
+    overflow-x: auto;
+  }
+  .wrap-slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stiky-header {
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(100px);
+    z-index: 10;
+  }
   .progress-wrapper {
     color: var(--primary-color);
     height: 99vh;
@@ -204,9 +261,9 @@
     display: flex;
     align-content: center;
     justify-content: center;
-    position: relative;
+    position: absolute;
     top: 25px;
-    right: 25px;
+    right: 10px;
     height: 15px;
     background-color: var(--background-color-white) !important;
     color: var(--primary-color) !important;
