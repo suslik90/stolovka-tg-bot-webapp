@@ -1,5 +1,5 @@
 <template>
-  <v-card class="menu-item-card pa-3 pb-0 mt-5">
+  <v-card class="menu-item-card pa-3 pb-0 mt-5" flat>
     <v-img
       :src="imageString"
       height="142px"
@@ -21,6 +21,7 @@
       <div class="menu-item-card__actions__buttons">
         <v-btn
           v-if="countInBasket(menuItem.name) == 0"
+          variant="flat"
           class="menu-item-card__actions__buttons__add primary-btn rounded-btn text-none"
           @click="addToBasket"
           >Добавить</v-btn
@@ -33,7 +34,6 @@
 
 <script>
   import MenuItemCounter from "./MenuItemCounter.vue";
-  import CartItem from "./CartItem.vue";
   import { useMainStore } from "../stores/main";
 
   export default {
@@ -75,7 +75,7 @@
   .menu-item-card {
     border-radius: var(--border-radius-btn);
     margin: 0 auto;
-    background-color: var(--background-color-white);
+    background-color: rgb(var(--v-theme-background-white));
     min-width: 295px;
     width: 95%;
     max-width: 554px;
@@ -86,17 +86,17 @@
     }
     &__title {
       font-weight: 600;
-      color: var(--menu-item-color);
+      color: rgb(var(--v-theme-menu-item-color));
       white-space: normal !important;
       line-height: initial !important;
     }
     &__text {
       font-weight: 400;
-      color: var(--menu-item-color);
+      color: rgb(var(--v-theme-menu-item-color));
     }
     &__actions {
       &__price {
-        color: var(--primary-color);
+        color: rgb(var(--v-theme-primary));
         font-size: 20px;
         font-weight: 600;
       }

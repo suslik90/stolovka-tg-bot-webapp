@@ -1,5 +1,5 @@
 <template>
-  <v-btn class="big-btn d-flex align-center justify-center primary-btn">
+  <v-btn variant="flat" class="big-btn d-flex align-center justify-center primary-btn">
     <slot></slot></v-btn>
 </template>
 

@@ -53,6 +53,7 @@
       </div>
     </div>
     <v-btn
+      variant="flat"
       icon="mdi-close"
       class="toolbar-btn-icon-size primary-btn toolbar-btn ml-6"
       @click="removeForceFromBasket(item)"
@@ -62,7 +63,6 @@
 
 <script setup>
   import MenuItemCounter from "./MenuItemCounter.vue";
-  import { defineProps } from "vue";
   import { useMainStore } from "../stores/main";
   import { tg } from "../utils/telegram-sdk";
   import { SwipeList, SwipeOut } from "vue-swipe-actions";
@@ -78,9 +78,9 @@
   });
 
   const mainStore = useMainStore();
-  const mobilePlatforms = ['android','ios'];
+  const mobilePlatforms = ["android", "ios"];
 
-  const isMobile = true;//mobilePlatforms.includes(tg.platform.toLowerCase()) ? true : false;
+  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase()) ? true : false;
 
   function removeForceFromBasket(_item) {
     mainStore.removeForceFromBasket(props.menuItem);
@@ -92,23 +92,22 @@
     border-radius: var(--border-radius-card-item);
   }
   .swipeout-action {
-    color: var(--font-color-over-primary);
+    color: rgb(var(--v-theme-font-color-over-primary));
     display: flex;
     align-items: center;
     font-size: 20px;
     font-weight: 700;
   }
   .slide-btn {
-    background-color: var(--primary-color);
+    background-color: rgb(var(--v-theme-primary));
     height: var(--input-height);
     border-radius: 32px;
     border-style: none;
-    // width: 373px;
   }
   .cart-item {
     height: var(--input-height);
     border-radius: var(--border-radius-card-item);
-    background-color: var(--background-color-white);
+    background-color: rgb(var(--v-theme-background-white));
     width: calc(100% - 70px);
     min-width: 300px;
 
@@ -118,26 +117,26 @@
       .name {
         font-weight: 400;
         font-size: 15px;
-        color: var(--menu-item-color);
+        color: rgb(var(--v-theme-menu-item-color));
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
       .price {
-        color: var(--primary-color);
+        color: rgb(var(--v-theme-menu-item-color));
         font-size: 15px;
-        font-weight: 600; //
+        font-weight: 600;
       }
     }
     &__right {
     }
   }
-  .desktop-item{
+  .desktop-item {
     min-width: 360px;
     width: 80%;
     max-width: 554px;
   }
-  .w-100{
-    width:100% !important;
+  .w-100 {
+    width: 100% !important;
   }
 </style>

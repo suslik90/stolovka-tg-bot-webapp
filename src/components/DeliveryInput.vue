@@ -17,11 +17,13 @@
     &__label {
       font-size: inherit !important;
       font-weight: 400;
+      color: rgb(var(--v-theme-menu-item-color));
     }
 
     &__input {
       font-size: inherit !important;
       font-weight: 300;
+      color: rgb(var(--v-theme-menu-item-color));
 
       .v-field__input {
         padding-top: 0 !important;

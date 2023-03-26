@@ -15,6 +15,7 @@
     <template v-slot:title>Доставка</template>
     <template v-slot:actions>
       <v-btn
+        variant="flat"
         icon="mdi-close"
         class="toolbar-btn-icon-size primary-btn toolbar-btn"
         @click="goMain"
@@ -28,6 +29,7 @@
       Адрес:
     </div>
     <v-btn
+      variant="flat"
       class="d-flex align-center jystify-center go-back secondary-btn rounded-btn text-none"
       @click="goBack"
     >
@@ -324,7 +326,7 @@
     }
     .v-radio {
       .v-label {
-        color: var(--white);
+        color: rgb(var(--v-theme-head-title-color));
         font-size: 20px;
         font-weight: 700;
         opacity: 1;
@@ -366,17 +368,12 @@
     .order-total {
       font-size: 20px;
       font-weight: 700;
-      color: var(--font-color-over-primary);
+      color: rgb(var(--v-theme-head-title-color));
     }
   }
-  .delivery-action{
+  .delivery-action {
     width: 100%;
     position: fixed;
     bottom: 20px;
   }
-  // .next-section {
-  //   width: 100%;
-  //   position: sticky;
-  //   bottom: -40px;
-  // }
 </style>

@@ -27,6 +27,7 @@
           </v-text-field>
           <div class="d-flex" style="position: relative">
             <v-btn
+              variant="flat"
               to="/basket"
               icon="mdi-cart-outline"
               class="ml-3 toolbar-btn-icon-size primary-btn toolbar-btn"
@@ -41,14 +42,16 @@
           </div>
         </template>
       </CustomToolbar>
-      <div class="menu-groups mt-6 pl-4">
+      <div class="menu-groups mt-6">
         <div class="wrap-slider d-flex">
           <div
             class="slider-item"
             v-for="(name, index) in mainStore.menuGroups"
+            :class="{ 'pl-3': index == 0 }"
             :key="'sg_' + index"
           >
             <v-btn
+              variant="flat"
               class="menu-groups__btn ma-2"
               rounded
               :class="{
@@ -61,24 +64,6 @@
             </v-btn>
           </div>
         </div>
-        <!-- <v-slide-group>
-          <v-slide-group-item
-            v-for="(name, index) in mainStore.menuGroups"
-            :key="'sg_' + index"
-          >
-            <v-btn
-              class="menu-groups__btn ma-2"
-              rounded
-              :class="{
-                'secondary-btn': name != isSelected,
-                'primary-btn': name == isSelected,
-              }"
-              @click="selectGroup(name)"
-            >
-              {{ name }}
-            </v-btn>
-          </v-slide-group-item>
-        </v-slide-group> -->
       </div>
     </div>
     <div class="d-flex flex-column justify-center mb-6 mx-2">
@@ -92,7 +77,7 @@
 </template>
 
 <script setup>
-  import { ref, inject, computed, getCurrentInstance, onMounted } from "vue";
+  import { ref, inject, computed, onMounted } from "vue";
   import { useMainStore } from "../stores/main";
   import MenuItem from "../components/MenuItem.vue";
   import CustomToolbar from "../components/CustomToolbar.vue";
@@ -219,7 +204,7 @@
 </script>
 <style lang="scss">
   .wrap-slider {
-    width: 99%;
+    width: 100%;
     overflow-x: auto;
   }
   .wrap-slider::-webkit-scrollbar {
@@ -233,13 +218,13 @@
     z-index: 10;
   }
   .progress-wrapper {
-    color: var(--primary-color);
+    color: rgb(var(--v-theme-primary));
     height: 99vh;
   }
   .search-field {
     width: 100%;
     border-radius: var(--border-radius-header-btn) !important;
-    color: var(--font-color-over-primary);
+    color: rgb(var(--v-theme-font-color-over-primary));
     .v-field {
       .v-icon {
         opacity: 1 !important;
@@ -251,7 +236,7 @@
       .v-field__input::-webkit-input-placeholder,
       .v-field__input::placeholder {
         font-style: italic;
-        color: var(--font-color-over-primary);
+        color: rgb(var(--v-theme-font-color-over-primary));
         opacity: 1 !important;
       }
     }
@@ -265,8 +250,8 @@
     top: 25px;
     right: 10px;
     height: 15px;
-    background-color: var(--background-color-white) !important;
-    color: var(--primary-color) !important;
+    background-color: rgb(var(--v-theme-background-white)) !important;
+    color: rgb(var(--v-theme-primary)) !important;
     border-radius: 16px;
     font-size: 10px;
     padding: 0 5px;
