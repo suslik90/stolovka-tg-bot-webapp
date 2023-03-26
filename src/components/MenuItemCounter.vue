@@ -70,6 +70,7 @@
         font-size: 20px;
         font-weight: 600;
         padding: 0 10px;
+        color: rgb(var(--v-theme-menu-item-color));
       }
     }
   }

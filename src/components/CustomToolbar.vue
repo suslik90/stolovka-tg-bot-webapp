@@ -15,7 +15,7 @@
 <style lang="scss" scoped>
   .custom-toolbar {
     &__title {
-      color: var(--font-color-over-primary);
+      color: rgb(var(--v-theme-head-title-color));
       font-size: 32px;
       font-weight: 700;
     } 

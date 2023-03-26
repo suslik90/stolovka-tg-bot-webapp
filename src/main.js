@@ -22,13 +22,15 @@ import * as directives from 'vuetify/directives'
 const customLightTheme = {
   dark: false,
   colors: {
-    background: '#f1f1ff',
+    background: '#ffffff',
+    'background-white': '#f1f1ff',
     primary: '#f15a5a',
-    secondary: '#f15a5a40',
+    secondary: '#f15a5a',
     error: '#B00020',
     'menu-item-color': '#252c39',
     'placeholder-color': '#252c3980',
     'font-color-over-primary': '#f1f1ff',
+    'head-title-color': '#252c39',
     white: '#ffffff'
   }
 };
@@ -36,26 +38,28 @@ const customLightTheme = {
 const customDarkTheme = {
   dark: true,
   colors: {
-    background: '#1e1e1e',
-    primary: '#f1da5a',
-    secondary: '#f15a5a40',
+    background: '#252C39',
+    'background-white': '#f1f1ff',
+    primary: '#f15a5a',
+    secondary: '#f15a5a',
     error: '#B00020',
     'menu-item-color': '#252c39',
     'placeholder-color': '#252c3980',
     'font-color-over-primary': '#f1f1ff',
+    'head-title-color': '#f1f1ff',
     white: '#ffffff'
   }
 };
 
 const vuetify = createVuetify({
-  // theme: {
-  //   options: { customProperties: true },
-  //   defaultTheme: 'customLightTheme',
-  //   themes: {
-  //     'customLightTheme': customLightTheme,
-  //     'customDarkTheme': customDarkTheme
-  //   }
-  // },
+  theme: {
+    options: { customProperties: true },
+    defaultTheme: 'customLightTheme',
+    themes: {
+      'customLightTheme': customLightTheme,
+      'customDarkTheme': customDarkTheme
+    }
+  },
   components,
   directives,
   icons: {

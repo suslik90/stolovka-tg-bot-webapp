@@ -3,6 +3,7 @@
     <template v-slot:title>Корзина</template>
     <template v-slot:actions>
       <v-btn
+        variant="flat"
         icon="mdi-close"
         class="toolbar-btn-icon-size primary-btn toolbar-btn"
         @click="goBack"
@@ -19,6 +20,7 @@
       Заказ:
     </div>
     <v-btn
+      variant="flat"
       class="d-flex align-center jystify-center clear-basket secondary-btn rounded-btn text-none"
       @click="clearBasket"
     >
@@ -69,7 +71,7 @@
   }
 
   function toDelivery() {
-    router.push({ name: 'delivery' });
+    router.push({ name: "delivery" });
   }
 
   function clearBasket() {
@@ -89,16 +91,17 @@
       padding: 0 10px;
     }
   }
-  .slide-btn:last-child, .desktop-item:last-child {
-      margin-bottom: 110px !important;
-    }
+  .slide-btn:last-child,
+  .desktop-item:last-child {
+    margin-bottom: 110px !important;
+  }
   .next-section {
     width: 100%;
     position: fixed;
     bottom: 20px;
   }
   .basket-empty {
-    color: var(--font-color-over-primary);
+    color: rgb(var(--v-theme-head-title-color));
     height: 55vh;
     text-align: center;
     font-size: 18px;

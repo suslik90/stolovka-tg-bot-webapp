@@ -5,18 +5,18 @@ body {
   margin: 0;
   padding: 0;
 
-  background-color: var(--background-color);
+  background-color: var(--v-theme-background);
   font-family: "Inter", sans-serif;
 }
 
 .primary-btn {
-  background-color: var(--primary-color) !important;
-  color: var(--font-color-over-primary) !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: rgb(var(--v-theme-font-color-over-primary)) !important;
 }
 
 .secondary-btn {
-  background-color: var(--secondary-color) !important;
-  color: var(--font-color-over-primary) !important;
+  background-color: rgba(var(--v-theme-secondary), 0.25) !important;
+  color: rgb(var(--v-theme-font-color-over-primary)) !important;
 }
 .rounded-btn {
   border-radius: var(--border-radius-btn) !important;
@@ -28,6 +28,6 @@ body {
   border-radius: var(--border-radius-header-btn) !important;
 }
 
-.toolbar-btn-icon-size{
+.toolbar-btn-icon-size {
   font-size: 20px !important;
 }
