@@ -38,7 +38,7 @@
       </template>
     </swipe-list>
   </div>
-  <div class="desktop-item d-flex align-center justify-center px-5" v-else>
+  <div class="desktop-item d-flex align-center justify-center" v-else>
     <div
       class="d-flex justify-space-between justify-center align-center px-3 cart-item"
     >
@@ -64,7 +64,6 @@
 <script setup>
   import MenuItemCounter from "./MenuItemCounter.vue";
   import { useMainStore } from "../stores/main";
-  import { tg } from "../utils/telegram-sdk";
   import { SwipeList, SwipeOut } from "vue-swipe-actions";
   import "vue-swipe-actions/src/styles/vue-swipe-actions.css";
 
@@ -75,12 +74,10 @@
       price: Number,
       image: String,
     },
+    isMobile: Boolean
   });
 
   const mainStore = useMainStore();
-  const mobilePlatforms = ["android", "ios"];
-
-  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase()) ? true : false;
 
   function removeForceFromBasket(_item) {
     mainStore.removeForceFromBasket(props.menuItem);
@@ -108,11 +105,11 @@
     height: var(--input-height);
     border-radius: var(--border-radius-card-item);
     background-color: rgb(var(--v-theme-background-white));
-    width: calc(100% - 70px);
-    min-width: 300px;
+    width: calc(100% - 92px);
+    min-width: 240px;
 
     &__left {
-      width: 66%;
+      width: 60%;
 
       .name {
         font-weight: 400;
@@ -133,7 +130,7 @@
   }
   .desktop-item {
     min-width: 360px;
-    width: 80%;
+    width: calc(100% - 40px);
     max-width: 554px;
   }
   .w-100 {

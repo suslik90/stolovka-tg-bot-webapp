@@ -43,7 +43,12 @@
         </template>
       </CustomToolbar>
       <div class="menu-groups mt-6">
-        <div class="wrap-slider d-flex">
+        <div
+          class="wrap-slider d-flex"
+          ref="scroller"
+          @wheel.prevent="onWheel"
+          :scroll-left.camel="scrollLeft"
+        >
           <div
             class="slider-item"
             v-for="(name, index) in mainStore.menuGroups"
@@ -77,7 +82,7 @@
 </template>
 
 <script setup>
-  import { ref, inject, computed, onMounted } from "vue";
+  import { ref, inject, computed, onMounted, reactive } from "vue";
   import { useMainStore } from "../stores/main";
   import MenuItem from "../components/MenuItem.vue";
   import CustomToolbar from "../components/CustomToolbar.vue";
@@ -86,7 +91,6 @@
   import router from "../router";
 
   if (tg.BackButton.isVisible) tg.BackButton.hide();
-  tg.enableClosingConfirmation();
 
   const axios = inject("axios");
 
@@ -98,6 +102,20 @@
 
   let menuGroupsNames = [];
   let isSelected = ref("");
+
+  let scroller = ref(null);
+  let scrollLeft = ref(0);
+
+  const { min, max } = Math;
+
+  function onWheel(e) {
+    scrollLeft.value = scroller
+      ? min(
+          scroller.value.scrollWidth - scroller.value.offsetWidth,
+          max(0, e.deltaY + scrollLeft.value)
+        )
+      : scrollLeft.value;
+  }
 
   function setActiveMeals(_groupName) {
     let groupMeals = [];
@@ -214,7 +232,8 @@
   .stiky-header {
     position: sticky;
     top: 0;
-    backdrop-filter: blur(100px);
+    // backdrop-filter: blur(100px);
+    background-color: rgb(var(--v-theme-background));
     z-index: 10;
   }
   .progress-wrapper {
