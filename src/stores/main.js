@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { findIndex, sumBy, round } from 'lodash'
-import { ROUND_AFTER_DOT, ALL_MENU_ITEMS_GROUP_NAME } from '../utils/constants'
+import { ROUND_AFTER_DOT, BASKET_KEY } from '../utils/constants'
+import localStorage from '../utils/localStorage';
 
 export const useMainStore = defineStore('main', {
     state: () => {
@@ -31,8 +32,25 @@ export const useMainStore = defineStore('main', {
         }
     },
     actions: {
-        setMenu(_menu) {
+        async setMenu(_menu) {
             this.menu = _menu;
+            const localSavedBasket = await localStorage.getObject(BASKET_KEY);
+            if (Object.keys(localSavedBasket).length > 0) {
+                let onlyMeals = [];
+                this.menu.map((mItem) => {
+                    onlyMeals = onlyMeals.concat(mItem.meals);
+                });
+
+                const existedBasketItems = localSavedBasket.filter((bItem) => {
+                    const findedBasketItemInMenu = onlyMeals.find((oMeal) => oMeal.name.trim().toLowerCase() === bItem.name.trim().toLowerCase())
+                    if (findedBasketItemInMenu != undefined) {
+                            return bItem;
+                    }
+                });
+
+                this.basket = existedBasketItems;
+                localStorage.setObject(BASKET_KEY, this.basket);
+            }
         },
         setMenuGroups(_groups) {
             this.groups = _groups;
@@ -50,6 +68,7 @@ export const useMainStore = defineStore('main', {
                 delete item.image;
                 this.basket.push(item);
             }
+            localStorage.setObject(BASKET_KEY, this.basket);
         },
         removeFromBasket(item) {
             let existedIndex = findIndex(this.basket, { name: item.name });
@@ -62,13 +81,17 @@ export const useMainStore = defineStore('main', {
                     existedItem.totalPrice = round(existedItem.count * existedItem.price, ROUND_AFTER_DOT);
                     this.basket[existedIndex] = existedItem;
                 }
+
+                localStorage.setObject(BASKET_KEY, this.basket);
             }
         },
         removeForceFromBasket(item) {
             this.basket = [...this.basket.filter(basketItem => item.name !== basketItem.name)];
+            localStorage.setObject(BASKET_KEY, this.basket);
         },
         clearBasket() {
             this.basket = [];
+            localStorage.deleteItem(BASKET_KEY);
         }
     }
 })

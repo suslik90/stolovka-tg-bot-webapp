@@ -28,10 +28,11 @@
     </v-btn>
   </div>
   <div v-if="mainStore.basket.length > 0">
-    <div class="cart-list d-flex flex-column align-center pt-5 px-5">
+    <div class="cart-list d-flex flex-column align-center pt-5" :class="{'px-5': isMobile}">
       <CartItem
         v-for="basketItem in mainStore.basket"
         :menuItem="basketItem"
+        :isMobile="isMobile"
         class="mb-5"
       />
     </div>
@@ -64,6 +65,12 @@
     goBack();
   });
 
+  const mobilePlatforms = ["android", "ios"];
+
+  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase())
+    ? true
+    : false;
+
   const mainStore = useMainStore();
 
   function goBack() {
@@ -94,6 +101,10 @@
   .slide-btn:last-child,
   .desktop-item:last-child {
     margin-bottom: 110px !important;
+  }
+  .cart-list {
+    min-width: 340px;
+    margin: 0 auto;
   }
   .next-section {
     width: 100%;

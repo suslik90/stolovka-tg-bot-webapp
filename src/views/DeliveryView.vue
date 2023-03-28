@@ -319,7 +319,7 @@
   }
   .delivery-payment {
     .v-selection-control__input {
-      color: var(--primary-color);
+      color: rgb(var(--v-theme-primary));
     }
     .v-input {
       font-size: 20px;
@@ -348,6 +348,7 @@
 
         &__input input {
           padding-top: 8px !important;
+          color: rgb(var(--v-theme-menu-item-color));
         }
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
