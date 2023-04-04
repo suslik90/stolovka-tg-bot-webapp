@@ -1,7 +1,7 @@
 <template>
   <v-card class="menu-item-card pa-3 pb-0 mt-5" flat>
     <v-img
-      :src="imageString"
+      :src="menuItem.binaryUrl"
       height="142px"
       class="menu-item-card__image"
       cover
@@ -17,7 +17,9 @@
     <v-card-actions
       class="menu-item-card__actions d-flex justify-space-between px-0"
     >
-      <div class="menu-item-card__actions__price">{{ $filters.numberFormat(menuItem.price,[2, " "]) }} ₽</div>
+      <div class="menu-item-card__actions__price">
+        {{ $filters.numberFormat(menuItem.price, [2, " "]) }} ₽
+      </div>
       <div class="menu-item-card__actions__buttons">
         <v-btn
           v-if="countInBasket(menuItem.name) == 0"
@@ -43,6 +45,7 @@
         description: String,
         price: Number,
         image: String,
+        binaryUrl: String,
       },
     },
     components: { MenuItemCounter },
@@ -50,7 +53,7 @@
       const mainStore = useMainStore();
 
       const propsImage = props.menuItem?.image;
-      const imageString =
+      let imageString =
         propsImage.length > 0 ? "data:image/png;base64," + propsImage : "";
 
       function addToBasket() {

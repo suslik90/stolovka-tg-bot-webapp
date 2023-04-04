@@ -196,7 +196,7 @@
 
   onMounted(() => {
     isLoading.value = true;
-    axios.get(API_URL + "/menu").then(
+    axios.get(API_URL + "/menu ").then(
       (response) => {
         const menuWithKeys = response.data.menu.map((category) => {
           category.meals.map((mealItem) => {
