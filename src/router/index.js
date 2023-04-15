@@ -6,17 +6,22 @@ const router = createRouter({
     {
       path: '/',
       name: 'menu',
-      component: () => import('../views/MenuGrid.vue')
+      component: () => import('@/views/MenuGrid.vue')
+    },
+    {
+      path: '/:key/details',
+      name: 'details',
+      component: () => import('@/views/ItemDetailsView.vue')
     },
     {
       path: '/basket',
       name: 'basket',
-      component: () => import('../views/BasketView.vue')
+      component: () => import('@/views/BasketView.vue')
     },
     {
       path: '/delivery',
       name: 'delivery',
-      component: () => import('../views/DeliveryView.vue')
+      component: () => import('@/views/DeliveryView.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {

@@ -7,12 +7,12 @@
 <script setup>
   import { RouterView } from "vue-router";
   import { useTheme } from "vuetify";
-  import { tg } from "./utils/telegram-sdk";
+  import { tg } from "@/utils/telegram-sdk";
 
   const theme = useTheme();
 
   tg.onEvent("themeChanged", function () {
-    theme.global.name.value = theme.global.current.value.dark
+    theme.global.name.value = theme.global.name.value == "customDarkTheme"
       ? "customLightTheme"
       : "customDarkTheme";
   });

@@ -1,12 +1,44 @@
+//Common
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "./variables.scss";
 
-html,
-body {
-  margin: 0;
-  padding: 0;
+$background: #252C39;
+$black: #252C39;
+$white: #F1F1FF;
+$red: #F15A5A;
+$transparent_red: rgba(241, 90, 90, 0.25);
 
-  background-color: rgb(var(--v-theme-background));
-  font-family: "Inter", sans-serif;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+body,
+html {
+  height: 100%;
+  background: rgb(var(--v-theme-background));
+}
+.wrapper {
+  max-width: var(--max-width);
+  width: 100%;
+  margin: auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  &:first-child {
+    padding-top: 20px;
+  }
+  &:last-child {
+    padding-bottom: 50px;
+  }
+}
+
+.footer {
+  max-width: 356px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto auto 32px auto;
 }
 
 .primary-btn {

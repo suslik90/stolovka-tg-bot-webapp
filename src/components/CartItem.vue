@@ -39,20 +39,21 @@
     </swipe-list>
   </div>
   <div class="desktop-item d-flex align-center justify-center" v-else>
-    <div
-      class="d-flex justify-space-between justify-center align-center px-3 cart-item"
-    >
-      <div class="cart-item__left pl-3">
+    <div class="d-flex justify-space-between align-center px-6 cart-item">
+      <div class="cart-item__left d-flex">
         <div class="name">
           {{ menuItem.name }}
         </div>
-        <div class="price">{{ menuItem.price }} ₽</div>
+        <div class="price">
+          {{ $filters.numberFormat(menuItem.price, [2, " "]) }} ₽
+        </div>
       </div>
-      <div class="cart-item__right">
+      <div class="cart-item__right d-flex">
         <MenuItemCounter :menuItem="menuItem"></MenuItemCounter>
       </div>
     </div>
     <v-btn
+      size="small"
       variant="flat"
       icon="mdi-close"
       class="toolbar-btn-icon-size primary-btn toolbar-btn ml-6"
@@ -62,8 +63,8 @@
 </template>
 
 <script setup>
-  import MenuItemCounter from "./MenuItemCounter.vue";
-  import { useMainStore } from "../stores/main";
+  import MenuItemCounter from "@/components/MenuItemCounter.vue";
+  import { useMainStore } from "@/stores/main";
   import { SwipeList, SwipeOut } from "vue-swipe-actions";
   import "vue-swipe-actions/src/styles/vue-swipe-actions.css";
 
@@ -74,7 +75,7 @@
       price: Number,
       image: String,
     },
-    isMobile: Boolean
+    isMobile: Boolean,
   });
 
   const mainStore = useMainStore();
@@ -92,13 +93,14 @@
     color: rgb(var(--v-theme-font-color-over-primary));
     display: flex;
     align-items: center;
-    font-size: 20px;
+    justify-content: flex-end;
+    font-size: 15px;
     font-weight: 700;
   }
   .slide-btn {
     background-color: rgb(var(--v-theme-primary));
     height: var(--input-height);
-    border-radius: 32px;
+    border-radius: var(--border-radius-card-item);
     border-style: none;
   }
   .cart-item {
@@ -110,6 +112,7 @@
 
     &__left {
       width: 60%;
+      flex-direction: column;
 
       .name {
         font-weight: 400;
@@ -120,12 +123,13 @@
         white-space: nowrap;
       }
       .price {
-        color: rgb(var(--v-theme-menu-item-color));
+        color: rgb(var(--v-theme-primary));
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 400;
       }
     }
     &__right {
+      width: 110px;
     }
   }
   .desktop-item {

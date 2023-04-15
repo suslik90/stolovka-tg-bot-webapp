@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { findIndex, sumBy, round } from 'lodash'
-import { ROUND_AFTER_DOT, BASKET_KEY } from '../utils/constants'
-import localStorage from '../utils/localStorage';
+import { ROUND_AFTER_DOT, BASKET_KEY } from '@/utils/constants'
+import localStorage from '@/utils/localStorage';
 
 export const useMainStore = defineStore('main', {
     state: () => {
@@ -24,6 +24,15 @@ export const useMainStore = defineStore('main', {
                 return existedItem ? existedItem.count : 0;
             }
         },
+        getItemByKey(state) {
+            return (key) => {
+                let meals = [];
+                state.menu.map((groupItem) => {
+                    meals = meals.concat(groupItem.meals);
+                });
+                return meals.find((mealItem) => mealItem.key === key);
+            }
+        },
         actualityMenu(state) {
             return state.menu;
         },
@@ -44,7 +53,7 @@ export const useMainStore = defineStore('main', {
                 const existedBasketItems = localSavedBasket.filter((bItem) => {
                     const findedBasketItemInMenu = onlyMeals.find((oMeal) => oMeal.name.trim().toLowerCase() === bItem.name.trim().toLowerCase())
                     if (findedBasketItemInMenu != undefined) {
-                            return bItem;
+                        return bItem;
                     }
                 });
 
