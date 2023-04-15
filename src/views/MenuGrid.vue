@@ -6,9 +6,9 @@
     <v-progress-circular indeterminate :size="125"></v-progress-circular>
   </div>
   <div v-else>
-    <div class="stiky-header pt-4">
-      <CustomToolbar class="px-5">
-        <template v-slot:actions>
+    <div class="stiky-header">
+      <div class="wrapper">
+        <div class="search-wrapper">
           <v-text-field
             class="search-field primary-btn px-3 align-center"
             v-model="searchString"
@@ -25,24 +25,14 @@
               <v-icon icon="mdi-magnify" color="font-color-over-primary" />
             </template>
           </v-text-field>
-          <div class="d-flex" style="position: relative">
-            <v-btn
-              variant="flat"
-              to="/basket"
-              icon="mdi-cart-outline"
-              class="ml-3 toolbar-btn-icon-size primary-btn toolbar-btn"
-            ></v-btn>
-            <div
-              class="count-in-cart primary-btn"
-              v-show="mainStore.countAllInBasket > 0"
-              @click="goBasket"
-            >
+          <div class="cart" v-ripple @click="goBasket">
+            <div class="cart__counter" v-show="mainStore.countAllInBasket > 0">
               {{ mainStore.countAllInBasket }}
             </div>
           </div>
-        </template>
-      </CustomToolbar>
-      <div class="menu-groups mt-6">
+        </div>
+      </div>
+      <div class="menu-groups mt-3 pb-2">
         <div
           class="wrap-slider d-flex"
           ref="scroller"
@@ -56,8 +46,9 @@
             :key="'sg_' + index"
           >
             <v-btn
+              size="small"
               variant="flat"
-              class="menu-groups__btn ma-2"
+              class="menu-groups__btn ma-1 text-none"
               rounded
               :class="{
                 'secondary-btn': name != isSelected,
@@ -71,32 +62,34 @@
         </div>
       </div>
     </div>
-    <div class="d-flex flex-column justify-center mb-6 mx-2">
-      <MenuItem
-        v-for="menuItem in activeMeals"
-        :menuItem="menuItem"
-        :key="menuItem.key"
-      />
+    <div class="wrapper">
+      <div class="items-list">
+        <MenuItem
+          v-for="menuItem in activeMeals"
+          :menuItem="menuItem"
+          :key="menuItem.key"
+        ></MenuItem>
+      </div>
+      <!-- <div class="toup-btn">Наверх</div> -->
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref, inject, computed, onMounted, reactive } from "vue";
-  import { useMainStore } from "../stores/main";
-  import MenuItem from "../components/MenuItem.vue";
-  import CustomToolbar from "../components/CustomToolbar.vue";
-  import { API_URL, ALL_MENU_ITEMS_GROUP_NAME } from "../utils/constants";
-  import { tg } from "../utils/telegram-sdk";
-  import router from "../router";
+  import { inject, onMounted, ref } from "vue";
+  import MenuItem from "@/components/MenuItem.vue";
+  import { useRouter } from "vue-router";
+  import { useMainStore } from "@/stores/main";
+  import { ALL_MENU_ITEMS_GROUP_NAME, API_URL } from "@/utils/constants";
+  import { tg } from "@/utils/telegram-sdk";
 
   if (tg.BackButton.isVisible) tg.BackButton.hide();
 
   const axios = inject("axios");
+  const router = useRouter();
 
   let mainStore = useMainStore();
   let isLoading = ref(false);
-  let searchIsActive = ref(false);
   let searchString = ref("");
   let activeMeals = ref([]);
 
@@ -221,6 +214,12 @@
   });
 </script>
 <style lang="scss">
+  @import "@/assets/width.scss";
+
+  .progress-wrapper {
+    color: rgb(var(--v-theme-primary));
+    height: 99vh;
+  }
   .wrap-slider {
     width: 100%;
     overflow-x: auto;
@@ -229,19 +228,24 @@
     display: none;
   }
 
+  .menu-groups__btn {
+    .v-btn__content {
+      font-size: 15px !important;
+      font-weight: 700;
+    }
+  }
+
   .stiky-header {
     position: sticky;
     top: 0;
-    // backdrop-filter: blur(100px);
     background-color: rgb(var(--v-theme-background));
     z-index: 10;
   }
-  .progress-wrapper {
-    color: rgb(var(--v-theme-primary));
-    height: 99vh;
-  }
+  /*Страница категории*/
+  //search
   .search-field {
     width: 100%;
+    height: 100%;
     border-radius: var(--border-radius-header-btn) !important;
     color: rgb(var(--v-theme-font-color-over-primary));
     .v-field {
@@ -250,36 +254,175 @@
         font-size: 28px;
       }
       &__input {
-        padding-top: 8px !important;
+        padding-top: 10px !important;
+        font-size: 15px;
       }
       .v-field__input::-webkit-input-placeholder,
       .v-field__input::placeholder {
-        font-style: italic;
         color: rgb(var(--v-theme-font-color-over-primary));
         opacity: 1 !important;
       }
     }
   }
-
-  .count-in-cart {
+  .search-wrapper {
     display: flex;
-    align-content: center;
-    justify-content: center;
-    position: absolute;
-    top: 25px;
-    right: 10px;
-    height: 15px;
-    background-color: rgb(var(--v-theme-background-white)) !important;
-    color: rgb(var(--v-theme-primary)) !important;
-    border-radius: 16px;
-    font-size: 10px;
-    padding: 0 5px;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
   }
-  .menu-groups {
-    &__btn {
-      text-transform: initial !important;
-      font-size: 20px;
-      font-weight: 700;
+  .search-input-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    &:before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 0;
+      bottom: 0;
+      background: url("/img/search.svg") no-repeat center/contain;
+      width: 21px;
+      height: 21px;
+      margin: auto;
     }
+    input {
+      width: 100%;
+      height: 100%;
+      padding: 12px 46px;
+      color: rgb(var(--v-theme-white));
+      background: rgb(var(--v-theme-primary));
+      box-sizing: border-box;
+      border: none;
+      border-radius: 16px;
+      outline: none;
+      &::placeholder {
+        color: rgb(var(--v-theme-white));
+        font-size: 15px;
+        font-weight: 400;
+      }
+    }
+  }
+  .clear-search {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    background: url("/img/cross.svg") no-repeat center/contain;
+    width: 24px;
+    height: 24px;
+    margin: auto;
+  }
+  .cart {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    background: rgb(var(--v-theme-primary)) url("/img/cart.svg") no-repeat
+      center/24px;
+    border-radius: 16px;
+    margin-left: 12px;
+    flex: none;
+  }
+  .cart__counter {
+    position: absolute;
+    left: 20px;
+    top: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    background: rgb(var(--v-theme-white));
+    border-radius: 50%;
+    border: 1px solid rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-primary));
+    font-size: 10px;
+    font-weight: 700;
+  }
+  //categories-menu
+  .categories-menu-wrapper {
+    max-width: var($maxWidth);
+    width: 100%;
+    margin: auto;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+  .categories-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-column-gap: 13px;
+    padding: 15px 0;
+  }
+  .category {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 27px;
+    padding: 0 10px;
+    background: var(--secondary-color);
+    border-radius: 28px;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgb(var(--v-theme-white));
+  }
+  .current-category {
+    background: rgb(var(--v-theme-primary));
+  }
+  //item-list
+  @media screen and (min-width: $maxWidth) {
+    .items-list {
+      display: grid;
+      grid-gap: 28px;
+      grid-template-columns: 1fr 1fr;
+      .item-card {
+        box-sizing: border-box;
+        display: block;
+        max-width: 244px;
+        margin-bottom: 0;
+      }
+      .item-image {
+        width: 100%;
+        height: 208px;
+        margin-right: 0;
+        img {
+          width: 100%;
+        }
+      }
+      .item-name {
+        margin: 15px 0;
+      }
+      .item-order-btn {
+        height: 43px;
+        margin: 0 auto 15px;
+        width: 100%;
+      }
+      .item-mark {
+        width: 38.5px;
+        height: 33px;
+      }
+      .item-mark__cold {
+        background: url("/img/cold.svg") no-repeat center/21px;
+      }
+    }
+  }
+
+  .toup-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-color);
+    max-width: 242px;
+    width: 100%;
+    height: 43px;
+    margin: 40px auto auto auto;
+    border-radius: 28px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(var(--v-theme-white));
   }
 </style>

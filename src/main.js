@@ -1,16 +1,15 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import App from './App.vue'
-import router from './router'
+import App from '@/App.vue'
+import router from '@/router'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 import { vMaska } from "maska"
 
-// import './assets/main.css'
-import './assets/main.scss'
+import '@/assets/main.scss'
 
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
@@ -31,7 +30,9 @@ const customLightTheme = {
     'placeholder-color': '#252c3980',
     'font-color-over-primary': '#f1f1ff',
     'head-title-color': '#252c39',
-    white: '#ffffff'
+    white: '#ffffff',
+    'btn-minus-background': '#f15a5a',
+    'btn-minus-color': '#ffffff'    
   }
 };
 
@@ -47,7 +48,9 @@ const customDarkTheme = {
     'placeholder-color': '#252c3980',
     'font-color-over-primary': '#f1f1ff',
     'head-title-color': '#f1f1ff',
-    white: '#ffffff'
+    white: '#ffffff',
+    'btn-minus-background': '#f1f1ff',
+    'btn-minus-color': '#f15a5a'
   }
 };
 

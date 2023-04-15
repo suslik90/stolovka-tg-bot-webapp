@@ -1,11 +1,12 @@
 <template>
-  <div class="d-flex">
+  <div class="menu-item-wrapper d-flex justify-space-between">
     <v-btn
       variant="flat"
       icon="mdi-minus"
       class="menu-item__actions__buttons__minus secondary-btn rounded-btn"
       @click="removeFromBasket"
-    ></v-btn>
+    >
+    </v-btn>
     <div class="menu-item__actions__buttons__count d-flex align-center">
       {{ countInBasket(menuItem.name) }}
     </div>
@@ -19,7 +20,7 @@
 </template>
 
 <script>
-  import { useMainStore } from "../stores/main";
+  import { useMainStore } from "@/stores/main";
 
   export default {
     props: {
@@ -51,24 +52,27 @@
 </script>
 
 <style lang="scss" scoped>
+  .menu-item-wrapper {
+    width: 100%;
+  }
   .menu-item__actions {
     &__buttons {
-      &__add {
-        width: 160px;
-        height: 31px;
-        font-size: 16px;
-        font-weight: 600;
-        text-transform: none !important;
-      }
-
       &__minus,
       &__plus {
-        width: 31px;
-        height: 31px;
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 2px;
+      }
+      &__minus {
+        color: rgb(var(--v-theme-primary)) !important;
       }
       &__count {
-        font-size: 20px;
-        font-weight: 600;
+        font-size: 15px;
+        font-weight: 400;
         padding: 0 10px;
         color: rgb(var(--v-theme-menu-item-color));
       }

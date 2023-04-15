@@ -1,5 +1,5 @@
 <template>
-  <v-btn variant="flat" class="big-btn d-flex align-center justify-center primary-btn">
+  <v-btn variant="flat" class="big-btn d-flex align-center justify-center primary-btn text-none">
     <slot></slot></v-btn>
 </template>
 
@@ -8,14 +8,13 @@
 
 <style lang="scss" scoped>
   .big-btn {
-    height: 75px;
-    width:100%;
-    max-width: 373px;
-    text-transform: initial !important;
-    border-radius: var(--border-radius-big-btn);
-    padding: 15px 20px;
-
-    font-size: 30px;
+    height: 50px;
+    width:90%;
+    max-width: 356px;
+    border-radius: var(--border-radius-btn);  
+    font-size: 20px;
     font-weight: 700;
+    margin: 0 auto;
+    letter-spacing: initial !important;
   }
 </style>
