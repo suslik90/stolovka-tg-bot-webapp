@@ -11,15 +11,15 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <div class="wrapper padding-bottom-delivery">
+  <div class="wrapper">
     <div class="app-title">
       <div class="app-header__title">Доставка</div>
-      <v-btn
+      <!-- <v-btn
         variant="flat"
         size="small"
         class="clear-cart-btn text-none primary-btn"
         >Самовывоз</v-btn
-      >
+      > -->
     </div>
     <div class="info-title primary-btn">Адрес:</div>
     <div class="delivery-address d-flex flex-column justify-center mt-5">
@@ -207,7 +207,7 @@
           ></v-text-field>
         </div>
       </div>
-      <div class="radio-input-group mt-5" v-if="false">
+      <div class="radio-input-group mt-5">
         <label>
           <input
             type="radio"
@@ -225,29 +225,28 @@
           {{ $filters.numberFormat(DELIVERY_AMOUNT, [2, " "]) }} ₽
         </div>
       </div>
-      <div class="privacy" v-if="false">
-        Нажимая на кнопку “Оплатить” вы даете согласие на обработку и хранение
+      <div class="privacy">
+        Нажимая на кнопку {{orderForm.payment == "online" ? `“Оплатить”` : `“Заказать”` }} вы даете согласие на обработку и хранение
         персональных данных в соответствии с Политикой конфиденциальности и
         условиями.
         <a href="#">Подробнее</a>
       </div>
     </div>
-  </div>
-
-  <div class="footer">
-    <BigButton @click="send">
-      {{
-        orderForm.payment == "online"
-          ? `Оплатить ${$filters.numberFormat(mainStore.totalOrderPrice, [
-              2,
-              " ",
-            ])}`
-          : `Заказать за ${$filters.numberFormat(mainStore.totalOrderPrice, [
-              2,
-              " ",
-            ])}`
-      }}
-    </BigButton>
+    <div class="padding-order-btn">
+      <BigButton @click="send">
+        {{
+          orderForm.payment == "online"
+            ? `Оплатить ${$filters.numberFormat(mainStore.totalOrderPrice, [
+                2,
+                " ",
+              ])}`
+            : `Заказать за ${$filters.numberFormat(mainStore.totalOrderPrice, [
+                2,
+                " ",
+              ])}`
+        }}
+      </BigButton>
+    </div>
   </div>
 </template>
 
@@ -390,12 +389,12 @@
     color: rgb(var(--v-theme-head-title-color));
     margin: 22px 0;
   }
-  .padding-bottom-delivery {
-    padding-bottom: 100px;
-  }
 
   .delivery-address {
     width: 100%;
+  }
+  .padding-order-btn {
+    padding-top: 10px;
   }
 
   .radio-btns {

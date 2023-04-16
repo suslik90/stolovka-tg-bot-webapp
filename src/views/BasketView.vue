@@ -30,7 +30,7 @@
   </div>
   <div class="footer" v-if="mainStore.countAllInBasket > 0">
     <BigButton @click="toDelivery"
-      >Заказать на
+      >Заказать за
       {{ $filters.numberFormat(mainStore.totalOrderPrice, [2, " "]) }}
       ₽</BigButton
     >

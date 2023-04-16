@@ -197,6 +197,7 @@
     color: rgb(var(--v-theme-white));
     background: rgb(var(--v-theme-primary));
     border-radius: 28px;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
   }
   .item-order__btns {
     display: flex;
@@ -217,6 +218,7 @@
     height: 31px;
     border-radius: 50%;
     background: rgb(var(--v-theme-primary));
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
     svg {
       stroke: rgb(var(--v-theme-white));
     }
@@ -229,6 +231,7 @@
     height: 31px;
     border-radius: 50%;
     background: rgb(var(--v-theme-btn-minus-background));
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
     svg {
       stroke: rgb(var(--v-theme-btn-minus-color));
     }
