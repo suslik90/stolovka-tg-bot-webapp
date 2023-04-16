@@ -140,6 +140,12 @@
     font-size: 15px;
     font-weight: 600;
     line-height: 18.15px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 18px;
+    margin-bottom: -23px;
   }
   .item-order-btn {
     display: flex;
@@ -153,7 +159,8 @@
     color: rgb(var(--v-theme-white));
     border-radius: 28px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    font-weight: 400;
+    font-weight: 600;
+    font-size: 15px;
   }
   .item-order-btn__plus {
     display: flex;
