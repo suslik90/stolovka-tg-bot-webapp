@@ -1,10 +1,6 @@
 <template>
-  <div class="item-card">
-    <div
-      class="item-image"
-      :style="itemImageStyle"
-      @click="goToDetails(menuItem.key)"
-    >
+  <div class="item-card" @click="goToDetails(menuItem.key)">
+    <div class="item-image" :style="itemImageStyle">
       <!-- <div class="item-mark item-mark__cold"></div> -->
       <div class="add-to-cart" v-show="countInBasket(menuItem.name) > 0">
         {{ countInBasket(menuItem.name) }}
@@ -15,8 +11,9 @@
       class="item-order-btn"
       v-ripple
       v-if="countInBasket(menuItem.name) > 0"
+      @click.stop="false"
     >
-      <div class="item-order-btn__plus" @click="removeFromBasket">
+      <div class="item-order-btn__minus" @click="removeFromBasket">
         <svg
           width="13"
           height="3"
@@ -28,7 +25,7 @@
         </svg>
       </div>
       {{ $filters.numberFormat(menuItem.price, [0, " "]) }} ₽
-      <div class="item-order-btn__minus" @click="addToBasket">
+      <div class="item-order-btn__plus" @click="addToBasket">
         <svg
           width="13"
           height="13"
@@ -44,10 +41,10 @@
         </svg>
       </div>
     </div>
-    <div class="item-order-btn" v-ripple v-else @click="addToBasket">
-      <div class="item-order-btn__plus"></div>
-      {{ $filters.numberFormat(menuItem.price, [0, " "]) }} ₽
+    <div class="item-order-btn" v-ripple v-else @click.stop="addToBasket">
       <div class="item-order-btn__minus"></div>
+      {{ $filters.numberFormat(menuItem.price, [0, " "]) }} ₽
+      <div class="item-order-btn__plus"></div>
     </div>
   </div>
 </template>
@@ -78,7 +75,7 @@
 
       let itemImageStyle = `background-image: url("${props.menuItem?.binaryUrl}");`;
 
-      function addToBasket() {
+      function addToBasket(_event) {
         mainStore.addToBasket(props.menuItem);
       }
 
@@ -162,7 +159,7 @@
     font-weight: 600;
     font-size: 15px;
   }
-  .item-order-btn__plus {
+  .item-order-btn__minus {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,7 +173,7 @@
       stroke: rgb(var(--v-theme-white));
     }
   }
-  .item-order-btn__minus {
+  .item-order-btn__plus {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -207,17 +204,7 @@
   .in-cart {
     .add-to-cart {
       display: flex;
-    }
-    .item-order-btn__plus {
-      opacity: 1;
-      pointer-events: auto;
-      user-select: auto;
-    }
-    .item-order-btn__minus {
-      opacity: 1;
-      pointer-events: auto;
-      user-select: auto;
-    }
+    }    
   }
   .item-mark {
     position: absolute;

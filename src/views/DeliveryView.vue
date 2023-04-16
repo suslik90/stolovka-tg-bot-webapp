@@ -226,9 +226,10 @@
         </div>
       </div>
       <div class="privacy">
-        Нажимая на кнопку {{orderForm.payment == "online" ? `“Оплатить”` : `“Заказать”` }} вы даете согласие на обработку и хранение
-        персональных данных в соответствии с Политикой конфиденциальности и
-        условиями.
+        Нажимая на кнопку
+        {{ orderForm.payment == "online" ? `“Оплатить”` : `“Заказать”` }} вы
+        даете согласие на обработку и хранение персональных данных в
+        соответствии с Политикой конфиденциальности и условиями.
         <a href="#">Подробнее</a>
       </div>
     </div>
@@ -260,6 +261,8 @@
   import { useMainStore } from "@/stores/main";
   import { API_URL, DELIVERY_AMOUNT } from "@/utils/constants";
   import { tg } from "@/utils/telegram-sdk";
+
+  if (!tg.BackButton.isVisible) tg.BackButton.show();
 
   const axios = inject("axios");
 
@@ -312,9 +315,6 @@
     return orderForm.value.payment == "cash";
   });
 
-  function goBack() {
-    router.back();
-  }
   function goMain() {
     router.replace("/");
   }
@@ -327,7 +327,7 @@
     v$.value.$touch();
     if (!v$.value.$invalid) {
       axios
-        .post(API_URL + "/order", {
+        .post(API_URL + "/order?" + tg.initData, {
           order: mainStore.basket,
           delivery: orderForm,
           orderTotalPrice: mainStore.totalOrderPrice,

@@ -23,6 +23,12 @@ const router = createRouter({
       name: 'delivery',
       component: () => import('@/views/DeliveryView.vue')
     }
+    ,
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: () => import('@/views/ForbiddenView.vue')
+    }
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 }

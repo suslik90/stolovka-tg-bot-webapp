@@ -95,10 +95,7 @@
   import { useRoute, useRouter } from "vue-router";
   import { tg } from "@/utils/telegram-sdk";
 
-  tg.BackButton.show();
-  tg.BackButton.onClick(() => {
-    goBack();
-  });
+  if (!tg.BackButton.isVisible) tg.BackButton.show();
 
   const route = useRoute();
   const router = useRouter();

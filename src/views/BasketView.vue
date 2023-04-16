@@ -46,22 +46,17 @@
   import { useMainStore } from "@/stores/main";
   import { tg } from "@/utils/telegram-sdk";
 
-  tg.BackButton.show();
-  tg.BackButton.onClick(() => {
-    goBack();
-  });
+  if (!tg.BackButton.isVisible) tg.BackButton.show();
 
   const router = useRouter();
 
   const mobilePlatforms = ["android", "ios"];
 
-  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase()) ? true : false;
+  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase())
+    ? true
+    : false;
 
   const mainStore = useMainStore();
-
-  function goBack() {
-    router.back();
-  }
 
   function toDelivery() {
     router.push({ name: "delivery" });
