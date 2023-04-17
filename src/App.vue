@@ -8,29 +8,31 @@
   import { RouterView, useRouter } from "vue-router";
   import { useTheme } from "vuetify";
   import { tg } from "@/utils/telegram-sdk";
+  import { useMainStore } from "@/stores/main";
+  import { CUSTOM_THEMES } from "@/utils/constants";
 
   const theme = useTheme();
   const router = useRouter();
+  const mainStore = useMainStore();
 
-  const isProd = import.meta.env.PROD;
+  const mobilePlatforms = ["android", "ios"];
 
-  if (isProd) {
-    if (tg.initData.length === 0) {
-      router.replace({ name: "forbidden" });
-    }
-  }
+  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase())
+    ? true
+    : false;
+  mainStore.setMobile(isMobile);
 
   tg.onEvent("themeChanged", function () {
     theme.global.name.value =
-      theme.global.name.value == "customDarkTheme"
-        ? "customLightTheme"
-        : "customDarkTheme";
+      theme.global.name.value == CUSTOM_THEMES.DARK
+        ? CUSTOM_THEMES.LIGHT
+        : CUSTOM_THEMES.DARK;
   });
 
   if (tg.colorScheme === "light") {
-    theme.global.name.value = "customLightTheme";
+    theme.global.name.value = CUSTOM_THEMES.LIGHT;
   } else {
-    theme.global.name.value = "customDarkTheme";
+    theme.global.name.value = CUSTOM_THEMES.DARK;
   }
 
   tg.BackButton.onClick(() => {

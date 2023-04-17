@@ -63,7 +63,7 @@
       </div>
     </div>
     <div class="wrapper">
-      <div class="items-list">
+      <div class="items-list" v-bind:class="{ 'desktop-template': !isMobile}">
         <MenuItem
           v-for="menuItem in activeMeals"
           :menuItem="menuItem"
@@ -98,6 +98,9 @@
 
   let scroller = ref(null);
   let scrollLeft = ref(0);
+
+  const isMobile = mainStore.getMobile;
+  console.log("menu grid isMobile: ", isMobile);
 
   const { min, max } = Math;
 
@@ -373,40 +376,38 @@
     background: rgb(var(--v-theme-primary));
   }
   //item-list
-  @media screen and (min-width: $maxWidth) {
-    .items-list {
-      display: grid;
-      grid-gap: 28px;
-      grid-template-columns: 1fr 1fr;
-      .item-card {
-        box-sizing: border-box;
-        display: block;
-        max-width: 244px;
-        margin-bottom: 0;
-      }
-      .item-image {
-        width: 100%;
-        height: 208px;
-        margin-right: 0;
-        img {
-          width: 100%;
-        }
-      }
-      .item-name {
-        margin: 15px 0;
-      }
-      .item-order-btn {
-        height: 43px;
-        margin: 0 auto 15px;
+  .items-list.desktop-template {
+    display: grid;
+    grid-gap: 28px;
+    grid-template-columns: 1fr 1fr;
+    .item-card {
+      box-sizing: border-box;
+      display: block;
+      max-width: 244px;
+      margin-bottom: 0;
+    }
+    .item-image {
+      width: 100%;
+      height: 208px;
+      margin-right: 0;
+      img {
         width: 100%;
       }
-      .item-mark {
-        width: 38.5px;
-        height: 33px;
-      }
-      .item-mark__cold {
-        background: url("/img/cold.svg") no-repeat center/21px;
-      }
+    }
+    .item-name {
+      margin: 15px 0;
+    }
+    .item-order-btn {
+      height: 43px;
+      margin: 0 auto 15px;
+      width: 100%;
+    }
+    .item-mark {
+      width: 38.5px;
+      height: 33px;
+    }
+    .item-mark__cold {
+      background: url("/img/cold.svg") no-repeat center/21px;
     }
   }
 

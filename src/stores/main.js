@@ -8,7 +8,8 @@ export const useMainStore = defineStore('main', {
         return {
             basket: [],
             menu: [],
-            groups: []
+            groups: [],
+            mobile: false
         }
     },
     getters: {
@@ -37,10 +38,14 @@ export const useMainStore = defineStore('main', {
             return state.menu;
         },
         menuGroups(state) {
-            return state.groups
-        }
+            return state.groups;
+        },
+        getMobile(state) { return state.mobile; }
     },
     actions: {
+        setMobile(currentMobile) {
+            this.mobile = currentMobile;
+        },
         async setMenu(_menu) {
             this.menu = _menu;
             const localSavedBasket = await localStorage.getObject(BASKET_KEY);

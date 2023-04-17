@@ -7,3 +7,7 @@ export const ALL_MENU_ITEMS_GROUP_NAME = 'Все';
 export const BASKET_KEY = "basket";
 
 export const DELIVERY_AMOUNT = 125;
+
+export const FORBIDDEN_ROUTE_NAME = "forbidden";
+
+export const CUSTOM_THEMES = { LIGHT: 'customLightTheme', DARK: 'customDarkTheme' };
