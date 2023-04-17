@@ -16,6 +16,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { CUSTOM_THEMES } from './utils/constants'
 
 
 const customLightTheme = {
@@ -57,7 +58,7 @@ const customDarkTheme = {
 const vuetify = createVuetify({
   theme: {
     options: { customProperties: true },
-    defaultTheme: 'customLightTheme',
+    defaultTheme: CUSTOM_THEMES.LIGHT,
     themes: {
       'customLightTheme': customLightTheme,
       'customDarkTheme': customDarkTheme

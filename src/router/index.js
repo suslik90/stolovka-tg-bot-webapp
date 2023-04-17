@@ -1,4 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+import { FORBIDDEN_ROUTE_NAME } from '@/utils/constants';
+import { tg } from "@/utils/telegram-sdk";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,14 +27,32 @@ const router = createRouter({
     }
     ,
     {
-      path: '/forbidden',
-      name: 'forbidden',
+      path: `/${FORBIDDEN_ROUTE_NAME}`,
+      name: FORBIDDEN_ROUTE_NAME,
       component: () => import('@/views/ForbiddenView.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 }
   },
-})
+});
+
+const isProd = import.meta.env.PROD;
+router.beforeEach((to, from, next) => {
+  if (to.name != FORBIDDEN_ROUTE_NAME) {
+    if (isProd) {
+      if (tg.initData.length === 0) {
+        next({ name: FORBIDDEN_ROUTE_NAME });
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
 
 export default router

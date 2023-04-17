@@ -50,13 +50,9 @@
 
   const router = useRouter();
 
-  const mobilePlatforms = ["android", "ios"];
-
-  const isMobile = mobilePlatforms.includes(tg.platform.toLowerCase())
-    ? true
-    : false;
-
   const mainStore = useMainStore();
+
+  const isMobile = mainStore.getMobile;
 
   function toDelivery() {
     router.push({ name: "delivery" });
