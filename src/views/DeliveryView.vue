@@ -162,6 +162,7 @@
               v-model="orderForm.payment"
               value="cash"
               class="real-radio-btn"
+              @change="onChangeTypePay"
             />
             <span class="custom-radio-btn"></span>
             Наличные
@@ -172,11 +173,12 @@
             <input
               type="radio"
               v-model="orderForm.payment"
-              value="online"
+              value="card"
               class="real-radio-btn"
+              @change="onChangeTypePay"
             />
             <span class="custom-radio-btn"></span>
-            Онлайн
+            Карта
           </label>
         </div>
       </div>
@@ -187,27 +189,36 @@
       >
         <label>
           <input
-            type="radio"
+            type="checkbox"
             v-model="orderForm.hitBack"
-            :value="true"
             class="real-radio-btn odd-money-radio"
+            @change="onChangeHitback"
           />
           <span class="custom-radio-btn"></span>
           Сдача
         </label>
-        <div class="odd-money-input">
-          <v-text-field
-            type="number"
-            density="compact"
-            hide-details="auto"
-            variant="plain"
-            placeholder="Выдать сдачу с"
-            v-model.trim.number="orderForm.hitBackSum"
-            @input="filterNonNumeric"
-          ></v-text-field>
-        </div>
+        <v-slide-x-transition>
+          <div class="odd-money-input" v-show="orderForm.hitBack">
+            <v-text-field
+              type="number"
+              density="compact"
+              hide-details="auto"
+              variant="plain"
+              placeholder="Выдать сдачу с"
+              v-model.trim="orderForm.hitBackSum"
+            ></v-text-field>
+            <input
+              class="d-none"
+              v-maska
+              data-maska="0.99"
+              data-maska-tokens="0:\d:multiple|9:\d:optional"
+              type="text"
+              v-model="orderForm.hitBackSum"
+            />
+          </div>
+        </v-slide-x-transition>
       </div>
-      <div class="radio-input-group mt-5">
+      <div class="radio-input-group mt-5" v-if="false">
         <label>
           <input
             type="radio"
@@ -234,17 +245,17 @@
       </div>
     </div>
     <div class="padding-order-btn">
-      <BigButton @click="send">
+      <BigButton @click="send" :loading="processRequest">
         {{
           orderForm.payment == "online"
-            ? `Оплатить ${$filters.numberFormat(mainStore.totalOrderPrice, [
-                2,
-                " ",
-              ])}`
-            : `Заказать за ${$filters.numberFormat(mainStore.totalOrderPrice, [
-                2,
-                " ",
-              ])}`
+            ? `Оплатить ${$filters.numberFormat(
+                mainStore.totalOrderPrice + DELIVERY_AMOUNT,
+                [2, " "]
+              )}`
+            : `Заказать за ${$filters.numberFormat(
+                mainStore.totalOrderPrice + DELIVERY_AMOUNT,
+                [2, " "]
+              )}`
         }}
       </BigButton>
     </div>
@@ -254,7 +265,7 @@
 <script setup>
   import { useVuelidate } from "@vuelidate/core";
   import { email, helpers, minLength, required } from "@vuelidate/validators";
-  import { computed, inject, reactive, ref } from "vue";
+  import { inject, reactive, ref } from "vue";
   import BigButton from "@/components/BigButton.vue";
   import DeliveryInput from "@/components/DeliveryInput.vue";
   import { useRouter } from "vue-router";
@@ -286,10 +297,11 @@
     email: "",
     comment: "",
     payment: "cash",
-    hitBack: true,
+    hitBack: false,
     hitBackSum: null,
     deliveryAmount: DELIVERY_AMOUNT,
   });
+  let processRequest = ref(false);
   const rules = {
     city: { required: helpers.withMessage(errorMessages.required, required) },
     street: { required: helpers.withMessage(errorMessages.required, required) },
@@ -311,26 +323,32 @@
 
   let showErrorDialog = ref(false);
 
-  let paymentIsCash = computed(() => {
-    return orderForm.value.payment == "cash";
-  });
-
   function goMain() {
     router.replace("/");
   }
-  function filterNonNumeric() {
-    // Replace non-numeric characters with an empty string
-    orderForm.hitBackSum = orderForm.hitBackSum.replace(/[^0-9]/g, "");
+
+  function onChangeHitback() {
+    if (!orderForm.hitBack) {
+      orderForm.hitBackSum = null;
+    }
+  }
+
+  function onChangeTypePay() {
+    if (orderForm.payment === "card") {
+      orderForm.hitBack = false;
+      orderForm.hitBackSum = null;
+    }
   }
 
   function send() {
     v$.value.$touch();
     if (!v$.value.$invalid) {
+      processRequest.value = true;
       axios
         .post(API_URL + "/order?" + tg.initData, {
           order: mainStore.basket,
           delivery: orderForm,
-          orderTotalPrice: mainStore.totalOrderPrice,
+          orderTotalPrice: mainStore.totalOrderPrice + DELIVERY_AMOUNT,
           queryId: tg.initDataUnsafe?.query_id,
         })
         .then(
@@ -340,11 +358,14 @@
             tg.close();
           },
           (error) => {
-            showErrorDialog.value = true;
+            showErrorDialog.value = true;  
           }
         )
         .catch((error) => {
           showErrorDialog.value = true;
+        })
+        .finally(() => {
+          processRequest.value = false;
         });
     }
   }
@@ -457,6 +478,7 @@
   .odd-money {
     display: flex;
     align-items: center;
+    height: 32px;
   }
   .odd-money-input {
     max-width: 173px;

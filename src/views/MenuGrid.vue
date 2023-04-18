@@ -100,7 +100,6 @@
   let scrollLeft = ref(0);
 
   const isMobile = mainStore.getMobile;
-  console.log("menu grid isMobile: ", isMobile);
 
   const { min, max } = Math;
 
