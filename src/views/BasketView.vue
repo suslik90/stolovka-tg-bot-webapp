@@ -31,7 +31,7 @@
   <div class="footer" v-if="mainStore.countAllInBasket > 0">
     <BigButton @click="toDelivery"
       >Заказать за
-      {{ $filters.numberFormat(mainStore.totalOrderPrice, [2, " "]) }}
+      {{ $filters.numberFormat(mainStore.totalOrderPrice + DELIVERY_AMOUNT, [2, " "]) }}
       ₽</BigButton
     >
     <div class="delivery-price">Доставка {{ DELIVERY_AMOUNT }} ₽</div>

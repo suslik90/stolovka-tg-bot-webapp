@@ -1,17 +1,28 @@
 <template>
-  <v-btn variant="flat" class="big-btn d-flex align-center justify-center primary-btn text-none">
-    <slot></slot></v-btn>
+  <v-btn
+    :loading="loading"
+    variant="flat"
+    class="big-btn d-flex align-center justify-center primary-btn text-none"
+  >
+    <slot></slot
+  ></v-btn>
 </template>
 
 <script setup>
+  const props = defineProps({
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  });
 </script>
 
 <style lang="scss" scoped>
   .big-btn {
     height: 50px;
-    width:90%;
+    width: 90%;
     max-width: 356px;
-    border-radius: var(--border-radius-btn);  
+    border-radius: var(--border-radius-btn);
     font-size: 20px;
     font-weight: 700;
     margin: 0 auto;
