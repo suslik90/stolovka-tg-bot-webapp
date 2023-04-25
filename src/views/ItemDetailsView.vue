@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper details-view">
-    <div class="item-image" >
+    <div class="item-image">
       <v-img :src="menuItem?.binaryUrl" alt="" min-height="100">
         <template v-slot:placeholder>
           <v-row class="fill-height ma-0 align-center justify-center">
@@ -19,7 +19,11 @@
     <div class="item-description">{{ menuItem.description }}</div>
     <div class="item-order">
       <div class="item-order__amount">
-        {{ $filters.numberFormat(menuItem.price, [0, " "]) }}₽
+        {{
+          countInBasket(menuItem.name) > 0
+            ? $filters.numberFormat(menuItem.price * countInBasket(menuItem.name), [0, " "])
+            : $filters.numberFormat(menuItem.price, [0, " "])
+        }}₽
       </div>
       <div class="item-order__btns" v-if="countInBasket(menuItem.name) > 0">
         <div
@@ -104,11 +108,12 @@
 
   let menuItem = mainStore.getItemByKey(route.params.key);
 
-  if(menuItem == undefined){
+  if (menuItem == undefined) {
     goBack();
   }
 
-  let itemImageStyle = menuItem != undefined
+  let itemImageStyle =
+    menuItem != undefined
       ? `background-image: url("${menuItem.binaryUrl}");background-size: contain;`
       : "";
 
@@ -133,139 +138,140 @@
   @import "@/assets/width.scss";
   /*Страница товара*/
 
-  .details-view{
-   .item-image {
-    position: relative;
-    max-width: 250px;    
-    width: 100%;
-    margin: auto auto 12px auto;
-    // border-radius: 15px;
-    // overflow: hidden;
-    .v-img, img {
+  .details-view {
+    .item-image {
+      position: relative;
+      max-width: 250px;
       width: 100%;
-      border-radius: 15px;
+      margin: auto auto 12px auto;
+      // border-radius: 15px;
+      // overflow: hidden;
+      .v-img,
+      img {
+        width: 100%;
+        border-radius: 15px;
+      }
     }
-  }
-  .item-mark {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background-color: rgb(var(--v-theme-primary)) !important;
-    width: 38.5px;
-    height: 33px;
-    border-radius: 28px;
-    flex: none;
-    z-index: 10;
-  }
-  .item-mark__cold {
-    background: url("/img/cold.svg") no-repeat center/21px;
-  }
-  .item-name {
-    font-size: 20px;
-    font-weight: 700;
-    color: rgb(var(--v-theme-head-title-color));
-  }
-  .item-description {
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 18.15px;
-    color: rgb(var(--v-theme-head-title-color));
-    margin: 12px 0 22px 0;
-  }
-  .item-order {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .item-order__amount {
-    font-size: 20px;
-    font-weight: 600;
-    color: rgb(var(--v-theme-primary));
-  }
-  .item-order-add-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 160px;
-    width: 100%;
-    height: 31px;
-    font-size: 20px;
-    font-weight: 600;
-    color: rgb(var(--v-theme-white));
-    background: rgb(var(--v-theme-primary));
-    border-radius: 28px;
-    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
-  }
-  .item-order__btns {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    grid-column-gap: 20px;
-  }
-  .item-order__count {
-    font-weight: 600;
-    font-size: 20px;
-    color: rgb(var(--v-theme-head-title-color));
-  }
-  .item-order__plus {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 31px;
-    height: 31px;
-    border-radius: 50%;
-    background: rgb(var(--v-theme-primary));
-    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
-    svg {
-      stroke: rgb(var(--v-theme-white));
-    }
-  }
-  .item-order__minus {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 31px;
-    height: 31px;
-    border-radius: 50%;
-    background: rgb(var(--v-theme-btn-minus-background));
-    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
-    svg {
-      stroke: rgb(var(--v-theme-btn-minus-color));
-    }
-  }
-  .item-order-title {
-    position: relative;
-    font-size: 15px;
-    font-weight: 400;
-    color: rgb(var(--v-theme-white));
-    margin: 36px 0 14px 0;
-    &:before {
+    .item-mark {
       position: absolute;
-      top: -13px;
-      content: "";
+      top: 5px;
+      left: 5px;
+      background-color: rgb(var(--v-theme-primary)) !important;
+      width: 38.5px;
+      height: 33px;
+      border-radius: 28px;
+      flex: none;
+      z-index: 10;
+    }
+    .item-mark__cold {
+      background: url("/img/cold.svg") no-repeat center/21px;
+    }
+    .item-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: rgb(var(--v-theme-head-title-color));
+    }
+    .item-description {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 18.15px;
+      color: rgb(var(--v-theme-head-title-color));
+      margin: 12px 0 22px 0;
+    }
+    .item-order {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .item-order__amount {
+      font-size: 20px;
+      font-weight: 600;
+      color: rgb(var(--v-theme-primary));
+    }
+    .item-order-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 160px;
       width: 100%;
-      height: 2px;
-      background: rgb(var(--v-theme-white));
+      height: 31px;
+      font-size: 20px;
+      font-weight: 600;
+      color: rgb(var(--v-theme-white));
+      background: rgb(var(--v-theme-primary));
+      border-radius: 28px;
+      box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+    }
+    .item-order__btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      grid-column-gap: 20px;
+    }
+    .item-order__count {
+      font-weight: 600;
+      font-size: 20px;
+      color: rgb(var(--v-theme-head-title-color));
+    }
+    .item-order__plus {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: rgb(var(--v-theme-primary));
+      box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+      svg {
+        stroke: rgb(var(--v-theme-white));
+      }
+    }
+    .item-order__minus {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: rgb(var(--v-theme-btn-minus-background));
+      box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+      svg {
+        stroke: rgb(var(--v-theme-btn-minus-color));
+      }
+    }
+    .item-order-title {
+      position: relative;
+      font-size: 15px;
+      font-weight: 400;
+      color: rgb(var(--v-theme-white));
+      margin: 36px 0 14px 0;
+      &:before {
+        position: absolute;
+        top: -13px;
+        content: "";
+        width: 100%;
+        height: 2px;
+        background: rgb(var(--v-theme-white));
+      }
+    }
+    .item-type {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgb(var(--v-theme-white));
+      font-size: 15px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 28px;
+      background: rgba(var(--v-theme-primary), 0.25);
+      margin-bottom: 14px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .item-type-curent {
+      background: rgb(var(--v-theme-primary));
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     }
   }
-  .item-type {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: rgb(var(--v-theme-white));
-    font-size: 15px;
-    font-weight: 600;
-    padding: 7px 16px;
-    border-radius: 28px;
-    background: rgba(var(--v-theme-primary), 0.25);
-    margin-bottom: 14px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .item-type-curent {
-    background: rgb(var(--v-theme-primary));
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  }
-}
 </style>

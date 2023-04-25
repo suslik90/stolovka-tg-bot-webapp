@@ -24,7 +24,7 @@
           <path d="M1 1L11 1" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
-      {{ $filters.numberFormat(menuItem.price, [0, " "]) }} ₽
+      {{ $filters.numberFormat(menuItem.price*countInBasket(menuItem.name), [0, " "]) }} ₽
       <div class="item-order-btn__plus" @click="addToBasket">
         <svg
           width="13"
@@ -61,8 +61,7 @@
         description: String,
         price: Number,
         image: String,
-        binaryUrl: String,
-        count: Number,
+        binaryUrl: String
       },
     },
     components: { MenuItemCounter },
