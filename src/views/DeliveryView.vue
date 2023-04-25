@@ -11,7 +11,11 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    :class="{ 'bottom-empty-space': !isKeyboardHidden && isIOS }"
+    @click.self="onClickOutside"
+  >
     <div class="app-title">
       <div class="app-header__title">Доставка</div>
       <!-- <v-btn
@@ -34,6 +38,8 @@
             v-model="orderForm.city"
             :error-messages="v$.city.$errors.map((e) => e.$message)"
             required
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -50,6 +56,8 @@
             v-model="orderForm.street"
             :error-messages="v$.street.$errors.map((e) => e.$message)"
             required
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -66,6 +74,8 @@
             v-model="orderForm.apartment"
             :error-messages="v$.apartment.$errors.map((e) => e.$message)"
             required
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -79,6 +89,8 @@
             placeholder="Введите номер подъезда"
             v-model="orderForm.entrance"
             required
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -91,6 +103,8 @@
             variant="plain"
             placeholder="Введите этаж"
             v-model="orderForm.level"
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -104,6 +118,8 @@
             placeholder="Введите ФИО"
             v-model="orderForm.name"
             :error-messages="v$.name.$errors.map((e) => e.$message)"
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -117,6 +133,8 @@
             placeholder="Введите телефон"
             v-model="orderForm.phone"
             :error-messages="v$.phone.$errors.map((e) => e.$message)"
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
           <input
             class="d-none"
@@ -124,6 +142,8 @@
             data-maska="+7(###)-###-##-##"
             type="text"
             v-model="orderForm.phone"
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           />
         </template>
       </DeliveryInput>
@@ -138,6 +158,8 @@
             v-model="orderForm.email"
             :error-messages="v$.email.$errors.map((e) => e.$message)"
             required
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -150,6 +172,8 @@
             variant="plain"
             placeholder="Введите комментарий к заказу"
             v-model="orderForm.comment"
+            @blur="onMouseLeaveBlur"
+            @focus="setPaddingBottom"
           ></v-text-field>
         </template>
       </DeliveryInput>
@@ -206,6 +230,8 @@
               variant="plain"
               placeholder="Выдать сдачу с"
               v-model.trim="orderForm.hitBackSum"
+              @blur="onMouseLeaveBlur"
+              @focus="setPaddingBottom"
             ></v-text-field>
             <input
               class="d-none"
@@ -265,7 +291,7 @@
 <script setup>
   import { useVuelidate } from "@vuelidate/core";
   import { email, helpers, minLength, required } from "@vuelidate/validators";
-  import { inject, reactive, ref } from "vue";
+  import { inject, onUnmounted, reactive, ref } from "vue";
   import BigButton from "@/components/BigButton.vue";
   import DeliveryInput from "@/components/DeliveryInput.vue";
   import { useRouter } from "vue-router";
@@ -319,9 +345,37 @@
     },
   };
 
+  function onClickOutside() {
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  function setPaddingBottom() {
+    if (isIOS) {
+      isKeyboardHidden.value = false;
+    }
+  }
+
   let v$ = useVuelidate(rules, orderForm);
 
   let showErrorDialog = ref(false);
+  const isIOS = tg.platform.toLowerCase() == "ios";
+
+  const RESIZE_EVENT_NAME = "resize";
+  const isKeyboardHidden = ref(true);
+  const resizeListener = (event) => {
+    isKeyboardHidden.value = window.innerHeight / window.screen.availHeight > 0.6;
+  };
+  window.addEventListener(RESIZE_EVENT_NAME, resizeListener, false);
+  onUnmounted(() => {
+    window.removeEventListener(RESIZE_EVENT_NAME, resizeListener, false);
+  });
+
+  function onMouseLeaveBlur(e) {
+    e.target.blur();
+    isKeyboardHidden.value = true;
+  }
 
   function goMain() {
     router.replace("/");
@@ -358,7 +412,7 @@
             tg.close();
           },
           (error) => {
-            showErrorDialog.value = true;  
+            showErrorDialog.value = true;
           }
         )
         .catch((error) => {
@@ -372,6 +426,9 @@
 </script>
 
 <style lang="scss">
+  .bottom-empty-space {
+    padding-bottom: 280px !important;
+  }
   .app-title {
     display: flex;
     justify-content: space-between;
