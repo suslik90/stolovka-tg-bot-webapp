@@ -20,7 +20,7 @@
               <div class="name">
                 {{ menuItem.name.substring(0, 42) }}
               </div>
-              <div class="price">{{ menuItem.price }} ₽</div>
+              <div class="price">{{ menuItem.totalPrice }} ₽</div>
             </div>
             <div class="cart-item__right">
               <MenuItemCounter :menuItem="menuItem"></MenuItemCounter>
@@ -45,7 +45,7 @@
           {{ menuItem.name }}
         </div>
         <div class="price">
-          {{ $filters.numberFormat(menuItem.price, [2, " "]) }} ₽
+          {{ $filters.numberFormat(menuItem.totalPrice, [2, " "]) }} ₽
         </div>
       </div>
       <div class="cart-item__right d-flex">
@@ -74,6 +74,7 @@
       description: String,
       price: Number,
       image: String,
+      totalPrice: Number
     },
     isMobile: Boolean,
   });
