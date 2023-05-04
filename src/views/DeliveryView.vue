@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showErrorDialog" max-width="380">
+  <v-dialog persistent v-model="showErrorDialog" max-width="380">
     <v-card>
       <v-card-text>
         К сожалению, мы не смогли принять заказ и уже разбираемся с этой
@@ -392,6 +392,9 @@
       orderForm.hitBack = false;
       orderForm.hitBackSum = null;
     }
+  }
+  function closeErrorDialog(){
+    showErrorDialog.value = false;
   }
 
   function send() {
