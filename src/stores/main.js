@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { findIndex, sumBy, round } from 'lodash'
 import { ROUND_AFTER_DOT, BASKET_KEY } from '@/utils/constants'
 import localStorage from '@/utils/localStorage';
+import { ORDER_AMOUNT_FREE_DELIVERY } from '../utils/constants';
 
 export const useMainStore = defineStore('main', {
     state: () => {
@@ -9,7 +10,8 @@ export const useMainStore = defineStore('main', {
             basket: [],
             menu: [],
             groups: [],
-            mobile: false
+            mobile: false,
+            freeDelivery: false,
         }
     },
     getters: {
@@ -64,6 +66,7 @@ export const useMainStore = defineStore('main', {
 
                 this.basket = existedBasketItems;
                 localStorage.setObject(BASKET_KEY, this.basket);
+                this.detectFreeDelivery();
             }
         },
         setMenuGroups(_groups) {
@@ -83,6 +86,7 @@ export const useMainStore = defineStore('main', {
                 this.basket.push(item);
             }
             localStorage.setObject(BASKET_KEY, this.basket);
+            this.detectFreeDelivery();
         },
         removeFromBasket(item) {
             let existedIndex = findIndex(this.basket, { name: item.name });
@@ -95,17 +99,22 @@ export const useMainStore = defineStore('main', {
                     existedItem.totalPrice = round(existedItem.count * existedItem.price, ROUND_AFTER_DOT);
                     this.basket[existedIndex] = existedItem;
                 }
-
                 localStorage.setObject(BASKET_KEY, this.basket);
+                this.detectFreeDelivery();
             }
         },
         removeForceFromBasket(item) {
             this.basket = [...this.basket.filter(basketItem => item.name !== basketItem.name)];
             localStorage.setObject(BASKET_KEY, this.basket);
+            this.detectFreeDelivery();
         },
         clearBasket() {
             this.basket = [];
             localStorage.deleteItem(BASKET_KEY);
+            this.detectFreeDelivery();
+        },
+        detectFreeDelivery(){
+            this.freeDelivery = this.totalOrderPrice >= ORDER_AMOUNT_FREE_DELIVERY;
         }
     }
 })

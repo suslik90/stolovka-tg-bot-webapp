@@ -7,6 +7,7 @@ export const ALL_MENU_ITEMS_GROUP_NAME = 'Все';
 export const BASKET_KEY = "basket";
 
 export const DELIVERY_AMOUNT = parseFloat(import.meta.env.VITE_DELIVERY_AMOUNT_RUB);
+export const ORDER_AMOUNT_FREE_DELIVERY = parseFloat(import.meta.env.VITE_ORDER_AMOUNT_FREE_DELIVERY_RUB);
 
 export const FORBIDDEN_ROUTE_NAME = "forbidden";
 

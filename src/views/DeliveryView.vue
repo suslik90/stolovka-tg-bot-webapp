@@ -259,7 +259,11 @@
       <div class="delivery-amount-wrapper">
         <div class="info-title primary-btn">Доставка:</div>
         <div class="delivery-amount">
-          {{ $filters.numberFormat(DELIVERY_AMOUNT, [2, " "]) }} ₽
+          {{
+            mainStore.freeDelivery
+              ? `Бесплатно`
+              : `${$filters.numberFormat(DELIVERY_AMOUNT, [2, " "])} ₽`
+          }}          
         </div>
       </div>
       <div class="privacy">
@@ -275,11 +279,15 @@
         {{
           orderForm.payment == "online"
             ? `Оплатить ${$filters.numberFormat(
-                mainStore.totalOrderPrice + DELIVERY_AMOUNT,
+                mainStore.freeDelivery
+                  ? mainStore.totalOrderPrice
+                  : mainStore.totalOrderPrice + DELIVERY_AMOUNT,
                 [2, " "]
               )}`
             : `Заказать за ${$filters.numberFormat(
-                mainStore.totalOrderPrice + DELIVERY_AMOUNT,
+                mainStore.freeDelivery
+                  ? mainStore.totalOrderPrice
+                  : mainStore.totalOrderPrice + DELIVERY_AMOUNT,
                 [2, " "]
               )}`
         }}
@@ -325,7 +333,7 @@
     payment: "cash",
     hitBack: false,
     hitBackSum: null,
-    deliveryAmount: DELIVERY_AMOUNT,
+    deliveryAmount: mainStore.freeDelivery ? 0 : DELIVERY_AMOUNT,
   });
   let processRequest = ref(false);
   const rules = {
@@ -393,7 +401,7 @@
       orderForm.hitBackSum = null;
     }
   }
-  function closeErrorDialog(){
+  function closeErrorDialog() {
     showErrorDialog.value = false;
   }
 
@@ -405,7 +413,9 @@
         .post(API_URL + "/order?" + tg.initData, {
           order: mainStore.basket,
           delivery: orderForm,
-          orderTotalPrice: mainStore.totalOrderPrice + DELIVERY_AMOUNT,
+          orderTotalPrice: mainStore.freeDelivery
+                  ? mainStore.totalOrderPrice
+                  : mainStore.totalOrderPrice + DELIVERY_AMOUNT,
           queryId: tg.initDataUnsafe?.query_id,
         })
         .then(
